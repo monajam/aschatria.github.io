@@ -8,8 +8,8 @@ title: aschatria
 ## Table of contest
 
 1. STEEM
- 1. steem post
- 2. steem pm
- 3. steemrepair
+ 1.1. steem post
+ 1.2. steem pm
+ 1.3. steemrepair
 
 
