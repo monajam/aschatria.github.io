@@ -1,10 +1,8 @@
----
-layout: home
----
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<html>
+<head><title>wSHELL</title><link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="http://aschatria.github.io/assets/css/wshell.css">
 
- 
+ <body>
   
   <!-- made based on steemwhales post page thanks to @heimindanger -->
 <div class="container" style="position: relative;right: 20px;">
@@ -292,4 +290,5 @@ layout: home
 
  <i>made based on steemwhales post page thanks to @heimindanger, aschatria.github.com wshell-post app for personal use</i>
 
-
+</body>
+</html>
