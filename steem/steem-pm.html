@@ -1,0 +1,153 @@
+<html>
+<head>
+	
+	<title>STEEM PM </title> 
+<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+
+</head>
+
+<body>
+
+<h1>SEND PM TO STEEM</h1>
+	<hr/>
+<ul id="UserSteemData"><h2>User:</h2></ul>
+<h1 id="NodeData"></h1>
+<center>
+<style>
+            #result_zone strong {
+                color: white;
+                background-color: black;
+                padding: 2px;
+            }
+            body {
+                border-style: none;
+            }
+           
+            #NodeData {
+                margin: 20px;
+                background-color: yellow;
+            }
+        </style>
+<p><b>Password is not stored</b></p>
+<center>
+<h5>Comma Seperated User Names Without The @ Sign Example:</h5>
+<p>a,b,c,d</p>
+<form action="/" method="post" id="userlist_form">
+<input type="text" name="message" id="message" placeholder="Send To These Steemit Accounts" size="75" autofocus />
+	<br/>
+<input type="text" name="amount" id="amount" placeholder="The amount of SBD to send to every user..." size="75" autofocus />
+	<br/>
+<input type="text" name="memo" id="memo" placeholder="The memo to include with every transfer. Short Memos Work Best!" size="75" autofocus />
+<br></br>
+<input type="submit" id="send_message" value="Send" />
+</form>
+<section id="result_zone">
+</section>
+</center>
+<script>
+    // The username and activekey is requested, stored in the var username and displayed in the title
+            
+            var username = prompt('username');
+           
+    //steem activekey is requested and stored in var activekey this means it is only local cache and when this page is cache cleared the activekey is gone.
+            
+            var activekey = prompt('private active key');
+            
+            document.title = username + ' - ' + document.title;
+            
+    //Set the set api to be used for the script.
+           steem.api.setOptions({ url: 'https://api.steemit.com'});
+            
+    //Ping the node for the latest block, this will help verify connectivity.
+            steem.api.setOptions({ url: 'https://api.steemit.com'});
+            steem.api.getContentAsync(function(err, t) {
+                $('#NodeData').replaceWith("<p id='NodeData'>Current block time is: " + t.timestamp + " The Node you are on is: https://api.steemit.com" + "</p>");
+            });
+    steem.api.setOptions({ url: 'https://api.steemit.com'});
+    //Check the steem username provided and pull its info if it is real, otherwise drop and error on the screen about it.
+            steem.api.getAccounts([username], function(err, response){
+                if(response[0] != null) {
+                    $('#UserSteemData').append('<span><b>' + "Username: " + response[0].name + '</b></span><br/>');
+                    $('#UserSteemData').append('<span>' + "Memo Key: " + response[0].memo_key + '</span><br/>');
+                    $('#UserSteemData').append('<span>' + "Steem Balance: " + response[0].balance + '</span><br/>');
+                    $('#UserSteemData').append('<span>' + "SBD Balance: " + response[0].sbd_balance + '</span><br/>');
+                    $('#UserSteemData').append('<span>' + "My Voting Power: " + response[0].voting_power + '</span><br/>');
+                }
+                else {
+                    $('#result_zone').prepend('<p><em>' + "That is not a valid username, please use your steemit username. " + err + '</em></p>');
+                }
+            });       
+            
+                 // When the form is fired, the results are validated and then displayed on the page.
+            $('#userlist_form').submit(function () {
+                //Message is the list of users that will be sent to, it is a comma seperated list with no spaces. 
+                var message = $('#message').val().replace(/ /g,"");
+                //amount is the amount of steem to send to every user.
+                var amount = $('#amount').val();                
+                //memo is the message to attach to the transaction.
+                var memo = $('#memo').val();
+                
+                //because it is possible to send both sbd and steem we need to specify that we want to send SBD in the transaction.
+                var TOKEN = " SBD";
+                
+                //here we display on the screen all of the input that was just fired in an uncompressed format.
+                //this is likely extreneous and can be removed in the future, but it is good for debugging for the time being.
+                insertMessage(username, message, amount, memo);
+                
+                // Empties the input forms and puts the focus back on the message input field.
+                $('#amount').val('');
+                $('#memo').val('');
+                $('#message').val('').focus(); 
+                
+                //here we set up our list of users and split it based on the commas.
+                var userdispersallist = message.split(',');
+                
+                //here we iterate over the list of users and perform our needed ops.
+                
+                steem.api.setOptions({ url: 'https://api.steemit.com'});
+                $.each(userdispersallist, function (index, value){
+                    /*steem.broadcast.transfer(activekey, username, "steemthat", "1.000 SBD", "testing", function(err,   result) {
+                    console.log(err, result);
+                    });*/
+                    
+                    //first we need to check if each of these user name are real steem usernames and if they are not feed back
+                      steem.api.setOptions({ url: 'https://api.steemit.com'});
+                    steem.api.lookupAccountNames([value], function(err, lookupresult) {
+                        console.log(err, lookupresult);
+                        //once we get a response on the user we can move on and fire the transaction.
+                        
+                        if(lookupresult[0] != null ) {
+                            steem.api.setOptions({ url: 'https://api.steemit.com'});
+                            steem.broadcast.transfer(activekey, username, value, amount.concat(TOKEN), memo, function(err, transferresult) 
+                            {	
+				console.log(activekey, username, value, amount.concat(TOKEN), memo);
+                                console.log(transferresult, err);
+                                
+                                //drop all of the info on each transaction into the window so that we can see the results.
+                                
+                                $('#result_zone').prepend('<p><em>' + value + transferresult + " Message sent " + err +'</em></p>');
+                            });
+                        }
+                        else{
+                            $('#result_zone').prepend('<p><em>' + "Error!!" + value + err + '</em></p>');
+                        }
+                    });
+                });
+                 // Blocks 'classic' sending of the form
+                return false;
+            });
+            
+            
+             //Adds a message to the page
+            function insertMessage(username, message, amount, memo) {
+                $('#result_zone').prepend('<p><strong>' + username + '</strong> ' + message + " " + amount + " " + memo + '</p>');
+            }
+            
+        </script>
+	
+	<i>This is a browser side app entirely made based on SteemThat.com and meant for personal use only. </i>
+
+</body>
+</html>
