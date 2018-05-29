@@ -19,8 +19,7 @@ src="https://www.statcounter.com/counter/counter.js"
 async></script>
 <noscript><div class="statcounter"><img
 class="statcounter"
-src="//c.statcounter.com/11724421/0/8ebca4c3/1/" alt="Web
-Analytics"></div></noscript>
+src="//c.statcounter.com/11724421/0/8ebca4c3/1/"/></div></noscript>
 
 
 <img
