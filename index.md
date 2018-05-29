@@ -4,7 +4,7 @@ title: aschatria
 ---
 
 
-<br/><br/><br/>
+<br/><br/>
 <iframe width="100%" height="527px" scrolling="no" style="border: none;" src="https://www.opinionstage.com/polls/2505172/poll" frameBorder="0" name="os_frame" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
 
