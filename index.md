@@ -17,11 +17,10 @@ var sc_security="8ebca4c3";
 <script type="text/javascript"
 src="https://www.statcounter.com/counter/counter.js"
 async></script>
-<noscript><div class="statcounter"><a title="Web Analytics"
-href="http://statcounter.com/" target="_blank"><img
+<noscript><div class="statcounter"><img
 class="statcounter"
 src="//c.statcounter.com/11724421/0/8ebca4c3/1/" alt="Web
-Analytics"></a></div></noscript>
+Analytics"></div></noscript>
 
 
 <img
