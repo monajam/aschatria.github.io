@@ -1,21 +1,41 @@
-- title: Post to STEEM
-  url: https://aschatria.github.io/steem/wshell
-  image: https://i.imgur.com/b4VPrhV.jpg
-  completed: true
-
-- title: SEND PM TO STEEM
-  url: https://aschatria.github.io/steem/steem-pm
-  image: https://i.imgur.com/snHAyEO.jpg
-  completed: true
-
 - title: STEEMREPAIR
-  url: https://discord.me/steemrepair
+  url: https://steemit.com/@steemrepair
   image: https://i.imgur.com/VwfUjfY.png
   completed: true
 
-- title: CRUSOX.EU
-  url: http://www.crusox.eu/
+- title: SHOP
+  url: https://aschatria.ecwid.com/
   image: https://i.imgur.com/u07Sy6s.jpg
   completed: true
-
+  
+- title: REDDIT
+  url: 
+  image: 
+  completed: false
+  
+- title: TWITTER
+  url: https://twitter.com/aschatria
+  image: https://i.imgur.com/9cKVOWy.jpg
+  completed: false
+  
+- title: YOUTUBE
+  url: 
+  image: 
+  completed: false
+  
+- title: INSTAGRAM 
+  url: 
+  image: 
+  completed: false
+  
+- title: FACEBOOK PAGE 
+  url: 
+  image: 
+  completed: false
+  
+- title: TUMBLR 
+  url: 
+  image: 
+  completed: false
+  
 
