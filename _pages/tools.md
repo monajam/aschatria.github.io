@@ -1,5 +1,7 @@
 ---
 layout: page
+title: tools
+descriptions: list of tools
 permalink: /tools.html
 ---
 
