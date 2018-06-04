@@ -1,5 +1,6 @@
 ---
 layout: page
+permalink: /tools.html
 ---
 
 **Steemit Tools:**
