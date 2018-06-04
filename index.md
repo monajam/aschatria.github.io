@@ -17,3 +17,20 @@ title: aschatria
     updateInterval: 60
   });
 </script>
+
+<div id="steemit-widgets-blog"></div>
+<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+<script src="https://mktcode.github.io/steemit-widgets/assets/js/steemit-widgets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script>
+  steemitWidgets.blog({
+    element: 'steemit-widgets-blog',
+    user: 'aschatria',
+    limit: 10,
+    template: '<div style="font-family: Source Sans Pro,Helvetica Neue,Helvetica,Arial,sans-serif; padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px solid rgb(230, 230, 230);"><h2 style="margin: 0px; font-size: 16px; line-height: 16px; padding: 7px 10px 7px 0px; text-align: left;"><span>${RESTEEMED}</span> <a href="${URL}" style="color: rgb(51, 51, 51); text-decoration: none;"><b>${TITLE}</b></a></h2> <div style="font-size: 13px; color: rgb(51, 51, 51); padding-bottom: 5px; text-align: left;"><span style="color: rgb(138, 138, 138);">${DATE}</span> <!----> <span style="border: 1px solid rgb(218, 218, 218); border-radius: 50%; padding: 1px 4px; font-size: 11px; color: rgb(138, 138, 138);">${REPUTATION}</span> <span>in <a href="https://steemit.com/@${CATEGORY}" style="color: rgb(138, 138, 138); text-decoration: none; font-weight: bold;">${CATEGORY}</a></span></div> <!----> <div style="color: rgb(136, 136, 136); display: table; table-layout: fixed; width: 100%; font-size: 14px; line-height: 21px; padding: 10px 0px 5px;"><div style="display: table-cell; font-size: 16px; text-align: left;">$${PAYOUT}</div> <div style="display: table-cell; text-align: right;"><span><span style="width: 15px; height: 15px; display: inline-block; vertical-align: middle;"><svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#aaa"></path></svg></span> ${UPVOTES}</span> <span style="color: rgb(202, 202, 202); padding: 0px 10px;">|</span> <span><span style="width: 15px; height: 15px; display: inline-block; vertical-align: middle;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" xml:space="preserve"><g><path d="M294.1,365.5c-2.6-1.8-7.2-4.5-17.5-4.5H160.5c-34.7,0-64.5-26.1-64.5-59.2V201h-1.8C67.9,201,48,221.5,48,246.5v128.9 c0,25,21.4,40.6,47.7,40.6H112v48l53.1-45c1.9-1.4,5.3-3,13.2-3h89.8c23,0,47.4-11.4,51.9-32L294.1,365.5z" fill="#cacaca"></path><path d="M401,48H183.7C149,48,128,74.8,128,107.8v69.7V276c0,33.1,28,60,62.7,60h101.1c10.4,0,15,2.3,17.5,4.2L384,400v-64h17 c34.8,0,63-26.9,63-59.9V107.8C464,74.8,435.8,48,401,48z" fill="#cacaca"></path></g></svg></span> ${COMMENTS}</span></div></div></div>',
+    resteemedIndicator: '<span style="width: 15px; height: 15px; display: inline-block;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><path d="M448,192l-128,96v-64H128v128h248c4.4,0,8,3.6,8,8v48c0,4.4-3.6,8-8,8H72c-4.4,0-8-3.6-8-8V168c0-4.4,3.6-8,8-8h248V96 L448,192z"></path></svg></span>',
+    reputationPrecision: 3,
+    updateInterval: 60,
+    dateCallback: function (date) {return moment.utc(date).from(moment.utc().format('YYYY-MM-DD HH:mm:ss'));}
+  });
+</script>
