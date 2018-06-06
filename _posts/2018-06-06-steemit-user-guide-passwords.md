@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "STEEMIT USER GUIDE : PASSWORDS"
+title:  "Steemit user guide: passwords"
 date:   2018-06-06
 excerpt: "How to use passwords and keys on Steemit safe way."
 tag:
