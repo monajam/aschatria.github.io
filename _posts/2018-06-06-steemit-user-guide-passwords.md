@@ -5,11 +5,6 @@ date:   2018-06-06
 excerpt: "How to use passwords and keys on Steemit safe way."
 tag:
 - steemit 
-- user guide
-- blog
-- tutorial
-- howto
-- writing
 ---
 
 Steemit has a master passwords, and you should not lose control over it in any given moment.
