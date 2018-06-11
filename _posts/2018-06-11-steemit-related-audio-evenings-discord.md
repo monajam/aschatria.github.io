@@ -10,7 +10,12 @@ tag:
 This is a short list of Steemit oriented audio evenings ( voice chat) in Discord servers
 
 MON, GMT 6 PM, Steem Ramble
+
 MON, GMT 9 PM, BuddyUp
+
 SAT, GMT 4 PM, VOTU
+
 SAT, GMT 4 pm, steemgigs 
+
 SUN, GMT Midnight, Whaleshares
+
