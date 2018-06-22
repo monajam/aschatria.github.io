@@ -15,7 +15,9 @@ function postArticle()
     document.getElementById('title').value, // Title
     document.getElementById('article').value, // Body of post
     // json metadata (additional tags, app name, etc)
-    { tags: ['steemrepair'], app: 'This post is published with rShell by @aschatria' },
+    { tags: ['steemrepair'], app: 'This post is published with rShell by @aschatria', beneficiaries: [ 
+				           { account: 'steemrepair', weight: 500 }
+				         ]  },
     function (err, result) {
       if (err)
         alert('Failure! ' + err);
