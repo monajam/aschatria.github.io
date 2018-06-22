@@ -54,12 +54,7 @@
           </div>
         </div>
 
-        
-
-
-
-
-
+       
         
 
         <!-- Button -->
@@ -95,7 +90,7 @@
   
   
   
-  </script>
+ 
     <script type="text/javascript">
       beneficiaries = []
       tags = []
@@ -134,7 +129,7 @@
               title: title,
               body: markdown,
               json_metadata : JSON.stringify({
-                tags: 'rshell',
+                tags: [rshell, writing, inspirational, blogs],
                 app: 'rshell test'
               })
             }
@@ -155,9 +150,7 @@
           }]
         ];
 
-        if (beneficiaries.length == 0) {
-          operations[1][1].extensions = []
-        }
+       
 
         console.log(operations)
         steem.broadcast.send(
