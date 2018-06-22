@@ -313,13 +313,13 @@
           ['comment',
             {
               parent_author: '',
-              parent_permlink: tags[0],
+              parent_permlink: 'rshell', tags[0],
               author: author,
               permlink: permlink,
               title: title,
               body: markdown,
               json_metadata : JSON.stringify({
-                tags: 'rshell',tags,
+                tags: tags,
                 app: 'rshell'
               })
             }
