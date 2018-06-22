@@ -172,57 +172,9 @@
   
   
   
-  </script>
+ 
     <script type="text/javascript">
-      beneficiaries = []
-      weightRemaining = 10000
-      tags = []
-
-      $('#title').keydown(function() {
-        var permlink = $(this).val().toLowerCase()
-          .replace(/ /g,'-')
-          .replace(/[^\w-]+/g,'')
-        $('#permlink').val(permlink)
-      })
-
-      $('#tags').keydown(function() {
-        tags = $(this).val().split(' ')
-      })
-
-      $('#benefadd').click(function() {
-        for (var i = beneficiaries.length - 1; i >= 0; i--) {
-          if (beneficiaries[i].account == $('#benefusername').val()) {
-            weightRemaining += beneficiaries[i].weight;
-            beneficiaries.splice(i,1);
-          }
-        };
-        beneficiaries.push({
-          account: $('#benefusername').val(),
-          weight: 100*$('#benefshare').val()
-        })
-        weightRemaining -= 100*$('#benefshare').val()
-        displayBenefs()
-      })
-
-      function displayBenefs() {
-        $('#beneflist').empty()
-        for (var i = beneficiaries.length - 1; i >= 0; i--) {
-          var html = '<li>'+beneficiaries[i].account+' ('+beneficiaries[i].weight/100+'%) <button type="button" class="btn btn-danger btn-xs removeBenef" data-account="'+beneficiaries[i].account+'">x</button></li>'
-          $('#beneflist').append(html)
-        };
-        $('#weightRemaining')[0].innerHTML = weightRemaining/100;
-        $('.removeBenef').click(function(e) {
-          console.log($(this).data('account'))
-          for (var i = beneficiaries.length - 1; i >= 0; i--) {
-            if (beneficiaries[i].account == $(this).data('account')) {
-              weightRemaining += beneficiaries[i].weight;
-              beneficiaries.splice(i,1);
-              displayBenefs()
-            }
-          };
-        })
-      }
-
+    
       $('#post').submit(function(event) {
         event.preventDefault();
         $('#infoalert').show()
@@ -246,7 +198,7 @@
               title: title,
               body: markdown,
               json_metadata : JSON.stringify({
-                tags: tags,
+                tags: 'writing',
                 app: 'rshell'
               })
             }
