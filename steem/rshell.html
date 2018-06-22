@@ -1,6 +1,55 @@
 <html>
 <head><title>rSHELL</title><link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="http://aschatria.github.io/assets/css/wshell.css">
+  
+  
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+/**
+ * jQuery.textareaCounter
+ * Version 1.0
+ * Copyright (c) 2011 c.bavota - http://bavotasan.com
+ * Dual licensed under MIT and GPL.
+ * Date: 10/20/2011
+**/
+(function($){
+	$.fn.textareaCounter = function(options) {
+		// setting the defaults
+		// $("textarea").textareaCounter({ limit: 100 });
+		var defaults = {
+			limit: 100
+		};	
+		var options = $.extend(defaults, options);
+ 
+		// and the plugin begins
+		return this.each(function() {
+			var obj, text, wordcount, limited;
+			
+			obj = $(this);
+			obj.after('<span style="font-size: 11px; clear: both; margin-top: 3px; display: block;" id="counter-text">Max. '+options.limit+' words</span>');
+
+			obj.keyup(function() {
+			    text = obj.val();
+			    if(text === "") {
+			    	wordcount = 0;
+			    } else {
+				    wordcount = $.trim(text).split(" ").length;
+				}
+			    if(wordcount > options.limit) {
+			        $("#counter-text").html('<span style="color: #DD0000;">0 words left</span>');
+					limited = $.trim(text).split(" ", options.limit);
+					limited = limited.join(" ");
+					$(this).val(limited);
+			    } else {
+			        $("#counter-text").html((options.limit - wordcount)+' words left');
+			    } 
+			});
+		});
+	};
+})(jQuery);
+</script>
+  
+  </head>
 
  <body>
   
@@ -33,7 +82,9 @@
           <label class="col-md-4 control-label" for="markdown">Post Content<span class="glyphicon glyphicon-file" aria-hidden="true"></span></label>
           <div class="col-md-4">
             <textarea class="form-control" id="markdown" name="markdown" rows='7'></textarea>
-            
+            <script type="text/javascript">
+	$("textarea").textareaCounter();
+	</script>
             
           </div>
         </div>
