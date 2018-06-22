@@ -36,7 +36,7 @@
             Total word Count : <span id="display_count">0</span> words.
             <script type="text/javascript">
               $(document).ready(function() {
-    $("#markdown").on('keyup', function() {
+    $('#markdown').on('keyup', function() {
         var words = this.value.match(/\S+/g).length;
         if (words > 300) {
             // Split the string on first 200 words and rejoin on spaces
