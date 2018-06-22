@@ -75,24 +75,24 @@
         </div>
 
         <!-- Text input-->
-      <!-- <div class="form-group">
+      <div class="form-group">
           <label class="col-md-4 control-label" for="sbdpercent">Steem Dollars %</label>  
           <div class="col-md-4">
           <input id="sbdpercent" name="sbdpercent" type="number" placeholder="" class="form-control input-md" required="" min='0' max='100' value='100' step='0.01'>
           <span class="help-block">Set to 0% if you want to power up all your rewards</span>  
           </div>
-        </div>-->
+        </div>
 
 
 
         <!-- Text input-->
-      <!--<div class="form-group">
+      <div class="form-group">
           <label class="col-md-4 control-label" for="maxpayout">Max Accepted SBD Payout</label>  
           <div class="col-md-4">
           <input id="maxpayout" name="maxpayout" type="number" placeholder="" class="form-control input-md" required="" min='0' max='1000000' value='1000000' step='1'>
           <span class="help-block">Set to 0 if you want to decline payout</span>  
           </div>
-        </div>-->
+        </div>
 
         <!-- Button -->
         <div class="form-group">
@@ -254,8 +254,8 @@
           ['comment_options', {
             author: author,
             permlink: permlink,
-            max_accepted_payout: '1000000.000 SBD',
-            percent_steem_dollars: 100,
+            max_accepted_payout: maxpayout+'.000 SBD',
+            percent_steem_dollars: sbdpercent,
             allow_votes: true,
             allow_curation_rewards: true,
             extensions: [
