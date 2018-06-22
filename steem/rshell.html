@@ -10,7 +10,7 @@
         <fieldset>
 
         <!-- Form Name -->
-        <center><legend>Post on STEEM2</legend></center>
+        <center><legend>Post on STEEM</legend></center>
 
         <!-- Text input-->
         <div class="form-group">
@@ -36,6 +36,14 @@
           </div>
         </div>
 
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="tags">Tags<span class="glyphicon glyphicon-tags" aria-hidden="true"></span></label>  
+          <div class="col-md-4">
+          <input id="tags" name="tags" type="text" placeholder="" class="form-control input-md" required="">
+          <span class="help-block"></span>
+          </div>
+        </div>
 
         <!-- Text input-->
         <div class="form-group">
@@ -54,22 +62,93 @@
           </div>
         </div>
 
-       
-        
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="privatekey">
+            Beneficiaries<br />
+            <button style="background:#8571bf!important;" type='button' id="addbenef" name="addbenef" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#benefModal"><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> Add</button>
+          </label>
+          <div class="col-md-4">
+          <ul id='beneflist'>
+          </ul>
+          <span class="help-block">Author will get <span id='weightRemaining'>100</span>% of the rewards</span>  
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="sbdpercent">Steem Dollars %</label>  
+          <div class="col-md-4">
+          <input id="sbdpercent" name="sbdpercent" type="number" placeholder="" class="form-control input-md" required="" min='0' max='100' value='100' step='0.01'>
+          <span class="help-block">Set to 0% if you want to power up all your rewards</span>  
+          </div>
+        </div>
+
+
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="maxpayout">Max Accepted SBD Payout</label>  
+          <div class="col-md-4">
+          <input id="maxpayout" name="maxpayout" type="number" placeholder="" class="form-control input-md" required="" min='0' max='1000000' value='1000000' step='1'>
+          <span class="help-block">Set to 0 if you want to decline payout</span>  
+          </div>
+        </div>
 
         <!-- Button -->
         <div class="form-group">
           <label class="col-md-4 control-label" for="post"></label>
           <div class="col-md-4">
-            <button style="background:#8571bf!important;" id="post" name="post" class="btn btn-primary"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span>SEND</button>
+            <button style="background:#8571bf!important;" id="post" name="post" class="btn btn-primary"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Publish</button>
           </div>
         </div>
 
         </fieldset>
       </form>
 
-      
-  <div id='successalert' class="alert alert-success" style='display:none'>
+      <!-- Modal -->
+      <div class="modal fade" id="benefModal" role="dialog">
+        <div class="modal-dialog">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Add Beneficiary</h4>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" id='post'>
+                <fieldset>
+
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-md-4 control-label" for="benefusername">Beneficiary Username</label>  
+                  <div class="col-md-4">
+                  <input id="benefusername" name="benefusername" type="text" placeholder="" class="form-control input-md" required="" value='aschatria'>
+                  <span class="help-block">The steem username of the beneficiary</span>  
+                  </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-md-4 control-label" for="benefshare">Beneficiary %</label>  
+                  <div class="col-md-4">
+                  <input id="benefshare" name="benefshare" type="number" placeholder="" class="form-control input-md" required="" min='0' max='100' value='100' step='0.01'>
+                  <span class="help-block">The percentage of the posting rewards this beneficiary will receive</span>  
+                  </div>
+                </div>
+
+                </fieldset>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-dismiss="modal" id='benefadd'>Add</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='successalert' class="alert alert-success" style='display:none'>
         <strong>Success!</strong> Your post is now public on the blockchain.
       </div>
 
@@ -80,6 +159,9 @@
       <div id='erroralert' class="alert alert-danger" style='display:none'>
         <strong>Error!</strong> <span id='errormessage'></span>
       </div>
+    </div>
+  
+  
   
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -90,9 +172,10 @@
   
   
   
- 
+  </script>
     <script type="text/javascript">
       beneficiaries = []
+      weightRemaining = 10000
       tags = []
 
       $('#title').keydown(function() {
@@ -106,7 +189,40 @@
         tags = $(this).val().split(' ')
       })
 
-      
+      $('#benefadd').click(function() {
+        for (var i = beneficiaries.length - 1; i >= 0; i--) {
+          if (beneficiaries[i].account == $('#benefusername').val()) {
+            weightRemaining += beneficiaries[i].weight;
+            beneficiaries.splice(i,1);
+          }
+        };
+        beneficiaries.push({
+          account: $('#benefusername').val(),
+          weight: 100*$('#benefshare').val()
+        })
+        weightRemaining -= 100*$('#benefshare').val()
+        displayBenefs()
+      })
+
+      function displayBenefs() {
+        $('#beneflist').empty()
+        for (var i = beneficiaries.length - 1; i >= 0; i--) {
+          var html = '<li>'+beneficiaries[i].account+' ('+beneficiaries[i].weight/100+'%) <button type="button" class="btn btn-danger btn-xs removeBenef" data-account="'+beneficiaries[i].account+'">x</button></li>'
+          $('#beneflist').append(html)
+        };
+        $('#weightRemaining')[0].innerHTML = weightRemaining/100;
+        $('.removeBenef').click(function(e) {
+          console.log($(this).data('account'))
+          for (var i = beneficiaries.length - 1; i >= 0; i--) {
+            if (beneficiaries[i].account == $(this).data('account')) {
+              weightRemaining += beneficiaries[i].weight;
+              beneficiaries.splice(i,1);
+              displayBenefs()
+            }
+          };
+        })
+      }
+
       $('#post').submit(function(event) {
         event.preventDefault();
         $('#infoalert').show()
@@ -117,7 +233,8 @@
         var markdown = $('#markdown').val();
         var author = $('#author').val();
         var privatekey = $('#privatekey').val();
- 
+        var sbdpercent = 100*$('#sbdpercent').val();
+        var maxpayout = parseInt($('#maxpayout').val());
 
         var operations = [
           ['comment',
@@ -129,8 +246,8 @@
               title: title,
               body: markdown,
               json_metadata : JSON.stringify({
-                tags: [rshell, writing, inspirational, blogs],
-                app: 'rshell test'
+                tags: tags,
+                app: 'aschatria.github.com wshell-post app for personal use'
               })
             }
           ],
@@ -143,14 +260,15 @@
             allow_curation_rewards: true,
             extensions: [
               [0, {
-                beneficiaries: [ 
-				           { account: 'steemrepair', weight: 500 }
-				         ] 
+                beneficiaries: beneficiaries
+              }]
             ]
           }]
         ];
 
-       
+        if (beneficiaries.length == 0) {
+          operations[1][1].extensions = []
+        }
 
         console.log(operations)
         steem.broadcast.send(
@@ -173,6 +291,7 @@
   
   
   
+ <i>made based on steemwhales post page thanks to @heimindanger, aschatria.github.com wshell-post app for personal use</i>
 
 </body>
 </html>
