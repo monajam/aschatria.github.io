@@ -86,7 +86,7 @@ border-color: purple;
   color: #ffffff;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 350 px) {
   .navbar-default .navbar-nav .open .dropdown-menu > li > a {
     color: #ecf0f1;
   }
