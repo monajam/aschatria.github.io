@@ -15,9 +15,7 @@ function postArticle()
     document.getElementById('title').value, // Title
     document.getElementById('article').value, // Body of post
     // json metadata (additional tags, app name, etc)
-    { tags: ['steemrepair'], app: 'This post is published with rShell by @aschatria', beneficiaries: [ 
-				           { account: 'steemrepair', weight: 500 }
-				         ]  },
+    { tags: ['steemrepair'], app: 'This post is published with rShell by @aschatria' },
     function (err, result) {
       if (err)
         alert('Failure! ' + err);
@@ -25,6 +23,17 @@ function postArticle()
         alert('Success!');
     }
   );
+  steem.broadcast.comment_options(
+    {
+      extensions: [ 
+				       [0, { 
+				         beneficiaries: [ 
+				           { account: 'steemrepair', weight: 500 }
+				         ] 
+				       }] 
+				     ]  
+    }
+    );
 }
 </script>
 </head><style>
