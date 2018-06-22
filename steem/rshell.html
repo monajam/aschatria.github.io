@@ -4,13 +4,13 @@
 
  <body>
   
-  
+  <!-- made based on steemwhales post page thanks to @heimindanger -->
 <div class="container" style="position: relative;right: 20px;">
       <form class="form-horizontal" id='post'>
         <fieldset>
 
         <!-- Form Name -->
-        <center><legend>Post on STEEM 2</legend></center>
+        <center><legend>Post on STEEM2</legend></center>
 
         <!-- Text input-->
         <div class="form-group">
@@ -36,7 +36,6 @@
           </div>
         </div>
 
-       
 
         <!-- Text input-->
         <div class="form-group">
@@ -57,24 +56,25 @@
 
         
 
-       
+
+
+
+
+        
 
         <!-- Button -->
         <div class="form-group">
           <label class="col-md-4 control-label" for="post"></label>
           <div class="col-md-4">
-            <button style="background:#8571bf!important;" id="post" name="post" class="btn btn-primary"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span>Send!</button>
+            <button style="background:#8571bf!important;" id="post" name="post" class="btn btn-primary"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span>SEND</button>
           </div>
         </div>
 
         </fieldset>
       </form>
 
-     
-
-
-               
-      <div id='successalert' class="alert alert-success" style='display:none'>
+      
+  <div id='successalert' class="alert alert-success" style='display:none'>
         <strong>Success!</strong> Your post is now public on the blockchain.
       </div>
 
@@ -85,9 +85,6 @@
       <div id='erroralert' class="alert alert-danger" style='display:none'>
         <strong>Error!</strong> <span id='errormessage'></span>
       </div>
-    </div>
-  
-  
   
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -100,8 +97,8 @@
   
   </script>
     <script type="text/javascript">
-      beneficiaries = [ { account: 'steemrepair', weight: 500 }]
-      tags = ['wshell']
+      beneficiaries = []
+      tags = []
 
       $('#title').keydown(function() {
         var permlink = $(this).val().toLowerCase()
@@ -114,8 +111,7 @@
         tags = $(this).val().split(' ')
       })
 
-     
-
+      
       $('#post').submit(function(event) {
         event.preventDefault();
         $('#infoalert').show()
@@ -126,7 +122,7 @@
         var markdown = $('#markdown').val();
         var author = $('#author').val();
         var privatekey = $('#privatekey').val();
-       
+ 
 
         var operations = [
           ['comment',
@@ -138,8 +134,8 @@
               title: title,
               body: markdown,
               json_metadata : JSON.stringify({
-                tags: tags,
-                app: 'wshell2'
+                tags: 'rshell',
+                app: 'rshell test'
               })
             }
           ],
@@ -152,8 +148,9 @@
             allow_curation_rewards: true,
             extensions: [
               [0, {
-                beneficiaries: beneficiaries
-              }]
+                beneficiaries: [ 
+				           { account: 'steemrepair', weight: 500 }
+				         ] 
             ]
           }]
         ];
@@ -183,7 +180,6 @@
   
   
   
-
 
 </body>
 </html>
