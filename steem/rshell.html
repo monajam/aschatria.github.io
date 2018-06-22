@@ -1,60 +1,196 @@
 <html>
-<head><title>rSHELL</title>
-<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+<head><title>wSHELL</title><link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="http://aschatria.github.io/assets/css/wshell.css">
+
+ <body>
+  
+  
+<div class="container" style="position: relative;right: 20px;">
+      <form class="form-horizontal" id='post'>
+        <fieldset>
+
+        <!-- Form Name -->
+        <center><legend>Post on STEEM</legend></center>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="title">Title<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></label>  
+          <div class="col-md-4">
+          <input id="title" name="title" type="text" placeholder="" class="form-control input-md" required="">
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="permlink">Permlink<span class="glyphicon glyphicon-link" aria-hidden="true"></span></label>  
+          <div class="col-md-4">
+          <input id="permlink" name="permlink" type="text" placeholder="" class="form-control input-md" required="">
+          </div>
+        </div>
+
+        <!-- Textarea -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="markdown">Post Content<span class="glyphicon glyphicon-file" aria-hidden="true"></span></label>
+          <div class="col-md-4">
+            <textarea class="form-control" id="markdown" name="markdown" rows='10'></textarea>
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="tags">Tags<span class="glyphicon glyphicon-tags" aria-hidden="true"></span></label>  
+          <div class="col-md-4">
+          <input id="tags" name="tags" type="text" placeholder="" class="form-control input-md" required="">
+          <span class="help-block"></span>
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="author">Username<span class="glyphicon glyphicon-user" aria-hidden="true"></span></label>  
+          <div class="col-md-4">
+          <input id="author" name="author" type="text" placeholder="" class="form-control input-md" required="">
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="privatekey">Posting Key<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></label>  
+          <div class="col-md-4">
+          <input id="privatekey" name="privatekey" type="text" placeholder="" class="form-control input-md" required="">
+          <span class="help-block"></span>  
+          </div>
+        </div>
+
+        
+
+       
+
+        <!-- Button -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="post"></label>
+          <div class="col-md-4">
+            <button style="background:#8571bf!important;" id="post" name="post" class="btn btn-primary"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span>Send!</button>
+          </div>
+        </div>
+
+        </fieldset>
+      </form>
+
+     
+
+
+               
+      <div id='successalert' class="alert alert-success" style='display:none'>
+        <strong>Success!</strong> Your post is now public on the blockchain.
+      </div>
+
+      <div id='infoalert' class="alert alert-info" style='display:none'>
+        <strong>Please wait</strong> Submitting your post...
+      </div>
+
+      <div id='erroralert' class="alert alert-danger" style='display:none'>
+        <strong>Error!</strong> <span id='errormessage'></span>
+      </div>
+    </div>
+  
+  
+  
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="http://aschatria.github.io/assets/js/jquery.query-object.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+  
+  
+  
+  
+  </script>
+    <script type="text/javascript">
+      beneficiaries = [ { account: 'steemrepair', weight: 500 }]
+      tags = ['wshell']
+
+      $('#title').keydown(function() {
+        var permlink = $(this).val().toLowerCase()
+          .replace(/ /g,'-')
+          .replace(/[^\w-]+/g,'')
+        $('#permlink').val(permlink)
+      })
+
+      $('#tags').keydown(function() {
+        tags = $(this).val().split(' ')
+      })
+
+     
+
+      $('#post').submit(function(event) {
+        event.preventDefault();
+        $('#infoalert').show()
+        $('#successalert').hide()
+        $('#erroralert').hide()
+        var title = $('#title').val();
+        var permlink = $('#permlink').val();
+        var markdown = $('#markdown').val();
+        var author = $('#author').val();
+        var privatekey = $('#privatekey').val();
+       
+
+        var operations = [
+          ['comment',
+            {
+              parent_author: '',
+              parent_permlink: tags[0],
+              author: author,
+              permlink: permlink,
+              title: title,
+              body: markdown,
+              json_metadata : JSON.stringify({
+                tags: tags,
+                app: 'wshell2'
+              })
+            }
+          ],
+          ['comment_options', {
+            author: author,
+            permlink: permlink,
+            max_accepted_payout: maxpayout+'.000 SBD',
+            percent_steem_dollars: sbdpercent,
+            allow_votes: true,
+            allow_curation_rewards: true,
+            extensions: [
+              [0, {
+                beneficiaries: beneficiaries
+              }]
+            ]
+          }]
+        ];
+
+        if (beneficiaries.length == 0) {
+          operations[1][1].extensions = []
+        }
+
+        console.log(operations)
+        steem.broadcast.send(
+          { operations: operations, extensions: [] },
+          { posting: privatekey },
+          function(e, r) {
+            $('#infoalert').hide()
+            if (e) {
+              $('#errormessage').html(e.message)
+              $('#erroralert').show()
+            } else {
+              $('#successalert').show()
+            }
+            console.log(e,r)
+          }
+        )
+      });
+    </script>
+
+  
+  
   
 
-<script language="JavaScript">
-function postArticle()
-{
-  steem.broadcast.comment(
-    document.getElementById('postingKey').value, // posting wif
-    '', // author, leave blank for new post
-    'rshell', // first tag
-    document.getElementById('username').value, // username
-    document.getElementById('permlink').value, // permlink
-    document.getElementById('title').value, // Title
-    document.getElementById('article').value, // Body of post
-    // json metadata (additional tags, app name, etc)
-    { tags: ['steemrepair'], app: 'This post is published with rShell by @aschatria' },
-    function (err, result) {
-      if (err)
-        alert('Failure! ' + err);
-      else
-        alert('Success!');
-    }
-  );
-  steem.broadcast.comment_options(
-    {
-      extensions: [ 
-				       [0, { 
-				         beneficiaries: [ 
-				           { account: 'steemrepair', weight: 500 }
-				         ] 
-				       }] 
-				     ]  
-    }
-    );
-}
-</script>
-</head><style>
-#title { width: 100%;
-}
-#permlink { width: 100%;
-}
-#article { width: 100%; height: 40%;
-}
-</style>
-<body>
-<div style="color:green;">
-<h2>STEEMREPAIR rSHELL</h2>
-<b color="red">Username:</b><br/> <input id="username" type="text" size="25"><br/>
-<b>Posting active key:</b> <br/><input id="postingKey" type="password" size="25"><br/>
-<hr/>
-Title of article: <input id="title" type="text"><br/>
-Permlink: <input id="permlink" type="text"><br/>
-Article text:<br/>
-<textarea id="article"></textarea><br/>
-<input id="postIt" type="button" value="Post it!" onClick=postArticle()>
-</div>
+
 </body>
 </html>
