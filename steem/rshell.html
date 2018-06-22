@@ -1,0 +1,49 @@
+<html>
+<head><title>rSHELL</title>
+<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+  
+
+<script language="JavaScript">
+function postArticle()
+{
+  steem.broadcast.comment(
+    document.getElementById('postingKey').value, // posting wif
+    '', // author, leave blank for new post
+    'rshell', // first tag
+    document.getElementById('username').value, // username
+    document.getElementById('permlink').value, // permlink
+    document.getElementById('title').value, // Title
+    document.getElementById('article').value, // Body of post
+    // json metadata (additional tags, app name, etc)
+    { tags: ['steemrepair'], app: 'This post is published with rShell by @aschatria' },
+    function (err, result) {
+      if (err)
+        alert('Failure! ' + err);
+      else
+        alert('Success!');
+    }
+  );
+}
+</script>
+</head><style>
+#title { width: 100%;
+}
+#permlink { width: 100%;
+}
+#article { width: 100%; height: 40%;
+}
+</style>
+<body>
+<div style="color:green;">
+<h2>STEEMREPAIR rSHELL</h2>
+<b color="red">Username:</b><br/> <input id="username" type="text" size="25"><br/>
+<b>Posting active key:</b> <br/><input id="postingKey" type="password" size="25"><br/>
+<hr/>
+Title of article: <input id="title" type="text"><br/>
+Permlink: <input id="permlink" type="text"><br/>
+Article text:<br/>
+<textarea id="article"></textarea><br/>
+<input id="postIt" type="button" value="Post it!" onClick=postArticle()>
+</div>
+</body>
+</html>
