@@ -34,7 +34,7 @@
           <div class="col-md-4">
             <textarea class="form-control" id="markdown" name="markdown" rows='10'></textarea>
             Total word Count : <span id="display_count">0</span> words.
-            <script>
+            <script type="text/javascript">
               $(document).ready(function() {
     $("#markdown").on('keyup', function() {
         var words = this.value.match(/\S+/g).length;
