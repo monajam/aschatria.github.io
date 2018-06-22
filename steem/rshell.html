@@ -32,11 +32,11 @@
         <div class="form-group">
           <label class="col-md-4 control-label" for="markdown">Post Content<span class="glyphicon glyphicon-file" aria-hidden="true"></span></label>
           <div class="col-md-4">
-            <textarea class="form-control" id="markdown" name="inputString" rows='10'></textarea>
+            <textarea class="form-control" id="markdown" name="markdown" rows='10'></textarea>
             
             <script type="text/javascript"> 
             function countWords(){
-	s = document.getElementById("inputString").value;
+	s = document.getElementById("markdown").value;
 	s = s.replace(/(^\s*)|(\s*$)/gi,"");
 	s = s.replace(/[ ]{2,}/gi," ");
 	s = s.replace(/\n /,"\n");
