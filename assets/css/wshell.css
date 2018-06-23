@@ -6,6 +6,14 @@ h2 {
 	 font-family: Tahoma, Geneva, sans-serif;
 }
 
+.form-group {
+  width: 100%;
+}
+
+.col-md-4v {
+  width: 100%;
+}
+
 .button {
 background-color: red;
 border-color: purple;
