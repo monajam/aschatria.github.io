@@ -250,7 +250,7 @@
     <script type="text/javascript">
       beneficiaries = []
       weightRemaining = 10000
-      tags = 'rshell' + []
+      tags = []
 
       $('#title').keydown(function() {
         var permlink = $(this).val().toLowerCase()
@@ -314,13 +314,13 @@
           ['comment',
             {
               parent_author: '',
-              parent_permlink: tags[0],
+              parent_permlink: 'rshell',
               author: author,
               permlink: permlink,
               title: title,
               body: markdown,
               json_metadata : JSON.stringify({
-                tags: tags,
+                tags: ['blog', 'writing'],
                 app: 'rshell'
               })
             }
