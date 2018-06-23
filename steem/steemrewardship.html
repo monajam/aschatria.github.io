@@ -151,6 +151,14 @@
             
           </div>
         </div>
+          <hr/>
+          
+          <textarea id="branding" name="branding" rows='4'>
+          -----
+![img](img url)
+This is posted using SteemRewardShip app.
+[Visit to know more](https://aschatria.github.io/steem/steemrewardship.html)
+          </textarea>
           
    <hr/>    
           <center><h3>Payout</h3></center>
@@ -341,7 +349,7 @@
         $('#erroralert').hide()
         var title = $('#title').val();
         var permlink = $('#permlink').val();
-        var markdown = $('#markdown').val() + 'helloz';
+        var markdown = $('#markdown').val() + $('#branding').val();
         var author = $('#author').val();
         var privatekey = $('#privatekey').val();
         var sbdpercent = 100*$('#sbdpercent').val();
