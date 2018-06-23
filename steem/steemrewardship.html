@@ -153,12 +153,7 @@
         </div>
           <hr/>
           
-          <div id="branding" name="branding">
------
-![img](img url)
-This is posted using SteemRewardShip app.
-[Visit to know more](https://aschatria.github.io/steem/steemrewardship.html)
-          </div>
+          
           
    <hr/>    
           <center><h3>Payout</h3></center>
@@ -349,7 +344,7 @@ This is posted using SteemRewardShip app.
         $('#erroralert').hide()
         var title = $('#title').val();
         var permlink = $('#permlink').val();
-        var markdown = $('#markdown').val() + $('#branding').val();
+        var markdown = $('#markdown').val() + '<hr/><img src=""/><br/><b>This is posted using SteemRewardShip app.</b><a href="https://aschatria.github.io/steem/steemrewardship.html">Visit to know more</a><hr/>';
         var author = $('#author').val();
         var privatekey = $('#privatekey').val();
         var sbdpercent = 100*$('#sbdpercent').val();
