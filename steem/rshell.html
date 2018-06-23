@@ -56,6 +56,38 @@
 
         <!-- Form Name -->
         <center><legend>Post on STEEM</legend></center>
+          
+           <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="author">Username<span class="glyphicon glyphicon-user" aria-hidden="true"></span></label>  
+          <div class="col-md-4">
+          <input id="author" name="author" type="text" placeholder="" class="form-control input-md" required="">
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="privatekey">Posting Key<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></label>  
+          <div class="col-md-4">
+          <input id="privatekey" name="privatekey" type="text" placeholder="" class="form-control input-md" required="">
+          <span class="help-block"></span>  
+          </div>
+        </div>
+          
+          <div class="form-group">
+          <label class="col-md-4 control-label" for="privatekey">
+            <button style="background:#8571bf!important;" type='button' id="addbenef" name="addbenef" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#benefModal"><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> Add sponsor</button>
+          </label>
+          <div class="col-md-4">
+          <ul id='beneflist'>
+          </ul>
+          <span class="help-block">You will get <span id='weightRemaining'>100</span>% of the rewards</span>  
+          </div>
+        </div>
+          
+          
+          <hr/>
+          
 
         <!-- Text input-->
         <div class="form-group">
@@ -85,30 +117,7 @@
           </div>
         </div>
           
-          
-          <p>
-            Our sponsor accepts these topics: psycholology, cooking, recipes, travel, scientific research, technology,art and drawing.
-          </p>
-          
-
         
-
-        <!-- Text input-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="author">Username<span class="glyphicon glyphicon-user" aria-hidden="true"></span></label>  
-          <div class="col-md-4">
-          <input id="author" name="author" type="text" placeholder="" class="form-control input-md" required="">
-          </div>
-        </div>
-
-        <!-- Text input-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="privatekey">Posting Key<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></label>  
-          <div class="col-md-4">
-          <input id="privatekey" name="privatekey" type="text" placeholder="" class="form-control input-md" required="">
-          <span class="help-block"></span>  
-          </div>
-        </div>
           
           <p>
             The posting key is not saved by this form and exists only in your browser untill you close it.
@@ -117,17 +126,7 @@
             In order to be considered for an upvote you have to add our sponsor.
           </p>
 
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="privatekey">
-            Sponsor<br />
-            <button style="background:#8571bf!important;" type='button' id="addbenef" name="addbenef" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#benefModal"><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> Add sponsor</button>
-          </label>
-          <div class="col-md-4">
-          <ul id='beneflist'>
-          </ul>
-          <span class="help-block">You will get <span id='weightRemaining'>100</span>% of the rewards</span>  
-          </div>
-        </div>
+        
 
         <!-- Text input-->
       <div class="form-group">
