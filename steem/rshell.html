@@ -250,7 +250,7 @@
     <script type="text/javascript">
       beneficiaries = []
       weightRemaining = 10000
-      tags = []
+      tags = 'rshell' + []
 
       $('#title').keydown(function() {
         var permlink = $(this).val().toLowerCase()
@@ -260,7 +260,7 @@
       })
 
       $('#tags').keydown(function() {
-        tags = 'rshell'+$(this).val().split(' ')
+        tags = $(this).val().split(' ')
       })
 
       $('#benefadd').click(function() {
