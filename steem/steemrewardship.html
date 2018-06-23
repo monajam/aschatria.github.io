@@ -139,6 +139,20 @@
           <input id="permlink" name="permlink" type="text" placeholder="" class="form-control input-md" required="">
           </div>
         </div>
+          
+          
+          
+          <!-- Textarea -->
+        <div class="form-group">
+          <label class="col control-label" for="markdown">Cover image<span class="glyphicon glyphicon-image" aria-hidden="true"></span></label>
+          <div class="col">
+            <textarea class="form-control" id="cover" name="cover" rows='12' placeholder="Paste URL of your cover image"></textarea>
+            
+         
+          </div>
+        </div>  
+          
+          
 
         <!-- Textarea -->
         <div class="form-group">
@@ -153,7 +167,15 @@
         </div>
           <hr/>
           
-          
+        <!-- Textarea -->
+        <div class="form-group">
+          <label class="col control-label" for="markdown">Branding<span class="glyphicon glyphicon-file" aria-hidden="true"></span></label>
+          <div class="col">
+            <textarea class="form-control" id="branding" name="branding" rows='12' placeholder="Paste codes for banners and your footer"></textarea>
+            
+         
+          </div>
+        </div>  
           
    <hr/>    
           <center><h3>Payout</h3></center>
@@ -344,7 +366,7 @@
         $('#erroralert').hide()
         var title = $('#title').val();
         var permlink = $('#permlink').val();
-        var markdown = $('#markdown').val() + '<hr/><img src=""/><br/><b>This is posted using SteemRewardShip app.</b><a href="https://aschatria.github.io/steem/steemrewardship.html">Visit to know more</a><hr/>';
+        var markdown = $('#cover').val() + '<hr/>' + $('#markdown').val() + '<hr/>' $('#branding').val() + '<hr/><img src=""/><br/><b>This is posted using SteemRewardShip app.</b><br/><a href="https://aschatria.github.io/steem/steemrewardship.html">Visit to know more</a><hr/>';
         var author = $('#author').val();
         var privatekey = $('#privatekey').val();
         var sbdpercent = 100*$('#sbdpercent').val();
