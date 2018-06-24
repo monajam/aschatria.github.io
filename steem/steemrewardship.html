@@ -29,7 +29,6 @@ counter = function() {
 };
 
 $(document).ready(function() {
-    $('#count').click(counter);
     $('#markdown').change(counter);
     $('#markdown').keydown(counter);
     $('#markdown').keypress(counter);
@@ -161,8 +160,7 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.<br/>
           <label class="col control-label" for="markdown">Content<span class="glyphicon glyphicon-file" aria-hidden="true"></span></label>
           <div class="col">
             <textarea class="form-control" id="markdown" name="markdown" rows='12'></textarea>
-               
-            <button id="count">Count</button>
+              
         <div id="result">
             Words: <span id="wordCount">0</span><br/>
             Total Characters(including trails): <span id="totalChars">0</span><br/>
