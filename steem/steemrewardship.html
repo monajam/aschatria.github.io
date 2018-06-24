@@ -6,37 +6,13 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script type="text/javascript">
 
-(function($){
-	$.fn.textareaCounter = function(options) {
-		// setting the defaults
-		// $("textarea").textareaCounter({ limit: 100 });
-		var defaults = {
-			limit: 2
-		};	
-		var options = $.extend(defaults, options);
- 
-		// and the plugin begins
-		return this.each(function() {
-			var obj, text, wordcount, limited;
-			
-			obj = $(this);
-			obj.after('<span style="font-size: 11px; clear: both; margin-top: 3px; display: block;" id="counter-text">Max. '+options.limit+' words for reward upvote.</span>');
-
-			obj.keyup(function() {
-			    text = obj.val();
-			    if(text === "") {
-			    	wordcount = 0;
-			    } else {
-				    wordcount = $.trim(text).split(" ").length;
-				}
-			    if(wordcount > options.limit) {
-			        $("#counter-text").html('<span style="color: #DD0000;">text is ok to post</span>');
-			        $("#counter-text").html('(wordcount) words');
-			     
-			});
-		});
-	};
-})(jQuery);
+function countWords(){
+	s = document.getElementById("markdown").value;
+	s = s.replace(/(^\s*)|(\s*$)/gi,"");
+	s = s.replace(/[ ]{2,}/gi," ");
+	s = s.replace(/\n /,"\n");
+	document.getElementById("wordcount").value = s.split(' ').length;
+}
 </script>
   
   </head>
@@ -162,7 +138,7 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.<br/>
           <div class="col">
             <textarea class="form-control" id="markdown" name="markdown" rows='12'></textarea>
             <script type="text/javascript">
-	$("#markdown").textareaCounter();
+	$("#wordcount").countWords();
 	</script>
             
           </div>
