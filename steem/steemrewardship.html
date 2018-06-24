@@ -35,7 +35,7 @@
 					limited = limited.join(" ");
 					$(this).val(limited);
 			    } else {
-			        $("#counter-text").html((options.limit - wordcount)+' words left');
+			        $("#counter-text").html('(wordcount)' words');
 			    } 
 			});
 		});
@@ -162,7 +162,7 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.<br/>
 
         <!-- Textarea -->
         <div class="form-group">
-          <label class="col control-label" for="markdown">Content, 200-300 words. <span class="glyphicon glyphicon-file" aria-hidden="true"></span></label>
+          <label class="col control-label" for="markdown">Content<span class="glyphicon glyphicon-file" aria-hidden="true"></span></label>
           <div class="col">
             <textarea class="form-control" id="markdown" name="markdown" rows='12'></textarea>
             <script type="text/javascript">
