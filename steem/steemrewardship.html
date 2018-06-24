@@ -177,7 +177,19 @@ You can also swap codes like this and create a cover from a Youtube video.<br/>
 <gcse:search></gcse:search>
 
               
-            </div>                                                                                                                                        
+            </div>  
+            
+            <form action=”http://www.youtube.com/results#videos” method=”get” target=”_blank”>
+<input name=”search_query” type=”text” maxlength=”128″ />
+<select name=”search_type”>
+<option value=””>Videos</option>
+<option value=”search_users”>Channels</option>
+</select>
+<input type=”submit” value=”Search” />
+</form>
+
+<div id="videos"></div>
+            
                                                                                                                                                       
           </div>
         </div>  
