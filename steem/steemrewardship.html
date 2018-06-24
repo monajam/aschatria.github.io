@@ -193,7 +193,17 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.
           </div>
         </div>  
           
-      
+      <hr/>
+          
+          
+          <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="tags">Tags<span class="glyphicon glyphicon-tags" aria-hidden="true"></span></label>  
+          <div class="col-md-4">
+          <input id="tags" name="tags" type="text" placeholder="" class="form-control input-md" required="">
+          <span class="help-block"></span>
+          </div>
+        </div>
           
           
           
@@ -342,7 +352,7 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.
       })
 
       $('#tags').keydown(function() {
-        tags = $(this).val().split(' ')
+        tags = 'steemrewardship' + $(this).val().split(' ')
       })
 
       $('#benefadd').click(function() {
@@ -396,13 +406,13 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.
           ['comment',
             {
               parent_author: '',
-              parent_permlink: 'steemrewardship',
+              parent_permlink: tags[0],
               author: author,
               permlink: permlink,
               title: title,
               body: markdown,
               json_metadata : JSON.stringify({
-                tags: ['blog', 'writing', 'knowledge', 'competition'],
+                tags: tags,
                 app: 'steemrewardship'
               })
             }
