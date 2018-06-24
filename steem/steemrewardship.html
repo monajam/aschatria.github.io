@@ -5,7 +5,38 @@
   
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script type="text/javascript">
+counter = function() {
+    var value = $('#markdown').val();
 
+    if (value.length == 0) {
+        $('#wordCount').html(0);
+        $('#totalChars').html(0);
+        $('#charCount').html(0);
+        $('#charCountNoSpace').html(0);
+        return;
+    }
+
+    var regex = /\s+/gi;
+    var wordCount = value.trim().replace(regex, ' ').split(' ').length;
+    var totalChars = value.length;
+    var charCount = value.trim().length;
+    var charCountNoSpace = value.replace(regex, '').length;
+
+    $('#wordCount').html(wordCount);
+    $('#totalChars').html(totalChars);
+    $('#charCount').html(charCount);
+    $('#charCountNoSpace').html(charCountNoSpace);
+};
+
+$(document).ready(function() {
+    $('#count').click(counter);
+    $('#markdown').change(counter);
+    $('#markdown').keydown(counter);
+    $('#markdown').keypress(counter);
+    $('#markdown').keyup(counter);
+    $('#markdown').blur(counter);
+    $('#markdown').focus(counter);
+});
 </script>
   
   </head>
@@ -130,8 +161,14 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.<br/>
           <label class="col control-label" for="markdown">Content<span class="glyphicon glyphicon-file" aria-hidden="true"></span></label>
           <div class="col">
             <textarea class="form-control" id="markdown" name="markdown" rows='12'></textarea>
-           
-            
+               
+            <button id="count">Count</button>
+        <div id="result">
+            Words: <span id="wordCount">0</span><br/>
+            Total Characters(including trails): <span id="totalChars">0</span><br/>
+            Characters (excluding trails): <span id="charCount">0</span><br/>
+            Characters (excluding all spaces): <span id="charCountNoSpace">0</span>
+        </div>
           </div>
         </div>
           <hr/>
