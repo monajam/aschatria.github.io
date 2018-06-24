@@ -6,13 +6,6 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script type="text/javascript">
 
-function countWords(){
-	s = document.getElementById("markdown").value;
-	s = s.replace(/(^\s*)|(\s*$)/gi,"");
-	s = s.replace(/[ ]{2,}/gi," ");
-	s = s.replace(/\n /,"\n");
-	document.getElementById("wordcount").value = s.split(' ').length;
-}
 </script>
   
   </head>
@@ -137,9 +130,7 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.<br/>
           <label class="col control-label" for="markdown">Content<span class="glyphicon glyphicon-file" aria-hidden="true"></span></label>
           <div class="col">
             <textarea class="form-control" id="markdown" name="markdown" rows='12'></textarea>
-            <script type="text/javascript">
-	$("#wordcount").countWords();
-	</script>
+           
             
           </div>
         </div>
