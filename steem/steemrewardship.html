@@ -11,7 +11,7 @@
 		// setting the defaults
 		// $("textarea").textareaCounter({ limit: 100 });
 		var defaults = {
-			limit: 300
+			limit: 2
 		};	
 		var options = $.extend(defaults, options);
  
@@ -30,12 +30,12 @@
 				    wordcount = $.trim(text).split(" ").length;
 				}
 			    if(wordcount > options.limit) {
-			        $("#counter-text").html('<span style="color: #DD0000;">0 words left</span>');
+			        $("#counter-text").html('<span style="color: #DD0000;">text is ok to post</span>');
 					limited = $.trim(text).split(" ", options.limit);
 					limited = limited.join(" ");
 					$(this).val(limited);
 			    } else {
-			        $("#counter-text").html('(wordcount)' words');
+			        $("#counter-text").html('(wordcount) words');
 			    } 
 			});
 		});
