@@ -352,7 +352,7 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.
       })
 
       $('#tags').keydown(function() {
-        tags ='steemrewardship,' + $(this).val().split(',')
+        tags = $(this).val().split(' ')
       })
 
       $('#benefadd').click(function() {
@@ -406,7 +406,7 @@ Sponsor is <a href="https://steemit.com/@monajam">@monajam</a>.
           ['comment',
             {
               parent_author: '',
-              parent_permlink: tags[0],
+              parent_permlink: steemrewardship,
               author: author,
               permlink: permlink,
               title: title,
