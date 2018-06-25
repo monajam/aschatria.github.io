@@ -3,7 +3,6 @@ layout: post
 title:  "Which Steem Apps take part of your reward?"
 date:   2018-06-15 02:00
 excerpt: 
-comments: true
 tag:
 - steemit 
 ---
