@@ -38,6 +38,8 @@ layout: compress
         {{ content }}
         <br>
         <div class="clearfix"></div>
+        
+        {% if page.comments %}
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = '{{ site.disqus }}';
@@ -49,6 +51,7 @@ layout: compress
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
+        {% endif %}
         <br>
         {% include share.html %}
         {% include page-pagination.html %}
