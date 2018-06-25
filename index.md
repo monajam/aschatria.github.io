@@ -17,8 +17,6 @@ I am a @steemrepair admin, community builder, hobby programmer, blogger, poet, f
   
   [Topics/Tags](https://aschatria.github.io/tags)
   
-  [Pages](https://aschatria.github.io/pages)
-  
   [Tools](https://aschatria.github.io/tools)
   
  -----
