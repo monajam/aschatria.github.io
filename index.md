@@ -22,3 +22,6 @@ I am a @steemrepair admin, community builder, hobby programmer, blogger, poet, f
   [Tools](https://aschatria.github.io/tools)
   
  -----
+ 
+ [@aschatria Steemit](https://steemit.com/@aschatria)
+ [Review me](https://steemit.com/reviewme/@aschatria/my-reviewme-profile-please-leave-your-feedback-about-aschatria)
