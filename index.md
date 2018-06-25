@@ -4,13 +4,11 @@ title: aschatria
 ---
 
 
-<p>
-  <blockquote>
-    - @steemrepair admin, community builder, hobby programmer, blogger, poet, fiction writer | infernal divinity in the silent pursuit of an exotic sprite
-    </blockquote>
-  <p/>
+**About me:** 
+I am a @steemrepair admin, community builder, hobby programmer, blogger, poet, fiction writer | infernal divinity in the silent pursuit of an exotic sprite.
+   
 
-<p>
+**Content:**
   
   [Post](https://aschatria.github.io/posts)
   
@@ -20,4 +18,4 @@ title: aschatria
   
   [Tools](https://aschatria.github.io/tools)
   
-  </p>
+ 
