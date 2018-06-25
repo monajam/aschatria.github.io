@@ -3,6 +3,7 @@ layout: post
 title:  "How to see your incoming rewards"
 date:   2018-06-15 01:00
 excerpt: "Nifty app to preview your incoming earnings."
+comments: true
 tag:
 - steemit 
 ---
