@@ -7,10 +7,10 @@ permalink: /tools.html
 
 **Steemit Tools:**
 
-[SteemRewardShip](https://aschatria.github.io/steem/steemrewardship.html)
+[SteemRewardShip](https://aschatria.github.io/steem/steemrewardship.html) - posting app / smart contract
 
-[Send message](https://aschatria.github.io/steem/steem-pm.html)
+[Send message](https://aschatria.github.io/steem/steem-pm.html) - send PM in bulk in STEEM
 
 **Other Tools:**
 
-[Free Image Search - Download pages](https://aschatria.github.io/steem/freedownloads.html)
+[Free Image Search - Download pages](https://aschatria.github.io/steem/freedownloads.html) - search free attribution images in multiple websites at once. 
