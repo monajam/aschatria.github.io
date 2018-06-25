@@ -11,17 +11,9 @@
   overflow-y: auto;
 }
 
-.block-left {
-width: 40%;
-  height: 100%;
-  position: relative;
-  display: table;
-  > div {
-    display: table-cell;
-    vertical-align: middle;
-}
+.block-left, 
 .block-right {
-  width: 60%;
+  width: 50%;
   height: 100%;
   position: relative;
   display: table;
