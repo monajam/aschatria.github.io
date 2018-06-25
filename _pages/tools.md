@@ -14,3 +14,5 @@ permalink: /tools.html
 **Other Tools:**
 
 [Free Image Search - Download pages](https://aschatria.github.io/steem/freedownloads.html) - search free attribution images in multiple websites at once. 
+
+[Color picker](https://aschatria.github.io/extra/color-picker.html) - color names, palette and code.
