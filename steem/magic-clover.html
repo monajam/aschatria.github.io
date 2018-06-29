@@ -188,7 +188,16 @@ You can also swap codes like this and create a cover from a Youtube video.<br/>
           </div>
         </div>
           <hr/>
-          
+                                                                          
+    <!-- divider-->
+        <div class="form-group">
+          <label class="col control-label" for="divider">Text Divider<span class="glyphicon glyphicon-sound-stereo" aria-hidden="true"></span></label>  
+          <div class="col">
+          <input id="divider" name="divider" type="text" placeholder="Insert your text divider, leave default, or add one in list" class="form-control input-md" required="">
+          <span class="help-block"><hr/></span>
+          </div>
+        </div>                                                                      
+          <hr/>
           
           <!-- Textarea -->
         <div class="form-group">
@@ -412,7 +421,7 @@ You can also swap codes like this and create a cover from a Youtube video.<br/>
         $('#erroralert').hide()
         var title = $('#title').val();
         var permlink = $('#permlink').val();
-        var markdown = '<strong>' + $('#cover').val() + '</strong><hr/>' + $('#markdown').val() + '<hr/>' + $('#resources').val()+'<hr/>' +  $('#branding').val() + '<hr/><center><img src="https://i.imgur.com/5IwlmBL.png"/><br/><b>This is posted using Magic Clover STEEM app.</b><br/><a href="https://aschatria.github.io/steem/magic-clover.html">Website- Learn More</a><br/><a href="https://discord.gg/NAancrq">Discord server - Join Us</a></center><hr/>';
+        var markdown = '<strong>' + $('#cover').val() + '</strong>' + $('#divider').val() + $('#markdown').val() + '$('#divider').val()' + $('#resources').val() +'$('#divider').val()' +  $('#branding').val() + $('#divider').val() + '<center><img src="https://i.imgur.com/5IwlmBL.png"/><br/><b>This is posted using Magic Clover STEEM app.</b><br/><a href="https://aschatria.github.io/steem/magic-clover.html">Website- Learn More</a><br/><a href="https://discord.gg/NAancrq">Discord server - Join Us</a></center>';
         var author = $('#author').val();
         var privatekey = $('#privatekey').val();
         var sbdpercent = 100*$('#sbdpercent').val();
