@@ -7,7 +7,7 @@ permalink: /tools.html
 
 **Steemit Tools:**
 
-[SteemRewardShip](https://aschatria.github.io/steem/steemrewardship.html) - posting app / smart contract
+[STEEM  Magic Clover](https://aschatria.github.io/steem/magic-clover.html) - posting app / smart contract
 
 [Send message](https://aschatria.github.io/steem/steem-pm.html) - send PM in bulk in STEEM
 
