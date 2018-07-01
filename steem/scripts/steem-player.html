@@ -1,0 +1,1325 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SteemStream.com - realtime blockchain stream visualisation</title>
+    <meta  name="description" content="Follow the upvotes, money transfers, comments, proof of work mining and other data in realtime on the Steem(it) Blockchain!">
+    <meta property="og:title" content="Steem Stream - realtime blockchain stream visualisation">
+<meta property="og:site_name" content="SteemStream.com">
+<meta property="og:image" content="http://SteemStream.com/ogimage.jpg">
+<meta property="og:url" content="http://steemstream.com">
+<meta property="og:description" content="Follow the upvotes, money transfers, comments, proof of work mining and other data in realtime on the Steem(it) Blockchain! ">
+<meta property="og:type" content="website">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="theme-color" content="#ffffff">
+
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.2/p5.min.js"></script> -->
+<script type="text/javascript">
+
+var mute = true;
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length,c.length);
+        }
+    }
+    return false;
+}
+
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
+function addWater(content) {
+
+  $('#waterfall').prepend('<div class="waterfallitem" style="display:none;"><div class="title">'+content.title+'</div><div class="undertitle">'+content.subtitle+'</div></div>');
+  $("#waterfall").find("div.waterfallitem:first").slideDown("fast");
+
+  // if sound is activated :
+  //
+  if(!mute) {
+    playAudio(content.class);
+  }
+
+}
+
+function addModal(content) {
+  $('#modalfall').prepend('<div class="waterfallitem" style="display:none;"><div class="title">'+content.title+'</div><div class="undertitle">'+content.subtitle+'</div></div>');
+  $("#modalfall").find("div.waterfallitem:first").slideDown("fast");
+}
+
+function handleObjects() {
+
+  ////console.log(objcontent.length);
+  if(objcontent.length > 0) {
+
+    addWater(objcontent[0]);
+    //(objcontent[0]);
+    objcontent.splice(0,1);
+
+  } else {
+
+      objcontent = [];
+      ////console.log(objcontent.length +' === somehow not good');
+
+  }
+
+  setTimeout(handleObjects, 200);
+}
+
+
+function addSource(elem, path) {
+  $('<source>').attr('src', path).appendTo(elem);
+}
+
+function playAudio(src){
+
+    if(src=='upvote') {
+      var rnd = Math.floor(Math.random() * 3) + 1;
+      src = 'upvote'+rnd;
+    }
+
+    if(src=='limit_order_create' || src=='limit_order_cancel' || src=='transfer') {
+      src = 'money';
+    }
+     var audio = $('<audio />', {
+       autoPlay : 'autoplay'
+     });
+
+     addSource(audio, 'audio/'+src+'.ogg');
+     addSource(audio, 'audio/'+src+'.mp3');
+
+     audio.appendTo('body');
+};
+
+
+
+  var count_vote, count_transaction = 0;
+  var lastblocknum = 0;
+  var blockcount = 0;
+  var txcount = 0;
+  var tot_transactions = tot_downvotes = tot_upvotes = tot_posts = tot_comments = tot_pow = tot_limitsells = tot_transfers = tot_users = 0;
+  var scriptstart = new Date().getTime();
+
+  var defaultsettings_types = {
+  	upvote: 1,
+    downvote: 1,
+  	comment: 1,
+    newpost: 1,
+  	transfer: 1,
+  	account_create: 1,
+  	limit_order_create: 1,
+  	account_update: 1,
+  	pow: 1
+  };
+
+  var defaultsettings_users = ['roelandp','ned','dan'];
+
+  var preffs = {types: defaultsettings_types, userstoshow: defaultsettings_users, desktopnotifications: false};
+
+  var cookie = getCookie('steemstreamprefs');
+  if(!cookie) {
+    //console.log('SETTING COOKIE FOR THE FIST TIME!');
+    setCookie('steemstreamprefs', JSON.stringify(preffs), 365);
+  } else {
+    preffs = JSON.parse(cookie);
+    //console.log('cookie', preffs);
+  }
+
+  function saveCookie() {
+    setCookie('steemstreamprefs', JSON.stringify(preffs), 365);
+  }
+
+
+
+
+  //var WebSocketWrapper;WebSocketWrapper=(function(){var ws=WebSocketWrapper.prototype;function WebSocketWrapper(server){this.server=server;this.connection={};this.callbacks=[]}ws.connect=function(){return new Promise((resolve,reject)=>{if('WebSocket'in window){this.connection=new WebSocket(this.server);this.connection.onopen=()=>{resolve(this.connection)};this.connection.onerror=function(error){reject(Error('Error connecting to server, please reload the page!'+error))};this.connection.onmessage=(data)=>{var sdata=JSON.parse(data['data']);this.callbacks[sdata['id']](sdata['result'])}}else{reject(Error('Your browser is too old, please get a recent one!'))}})};ws.send=function(data,callback){this.callbacks[data['id']]=callback;var json=JSON.stringify(data);this.connection.send(json)};return WebSocketWrapper})();
+  //var SteemWrapper;SteemWrapper=(function(){var steem=SteemWrapper.prototype;function SteemWrapper(ws){this.ws=ws;this.id=0}steem.send=function(method,params,callback){++this.id;var data={"id":this.id,"method":method,"params":params};this.ws.send(data,callback)};return SteemWrapper})();
+  //
+  var WebSocketWrapper;WebSocketWrapper = function () {
+    var ws = WebSocketWrapper.prototype;function WebSocketWrapper(server) {
+      this.server = server;this.connection = {};this.callbacks = [];
+    }ws.connect = function () {
+      var _this = this;
+
+      return new Promise(function (resolve, reject) {
+        if ('WebSocket' in window) {
+          _this.connection = new WebSocket(_this.server);_this.connection.onopen = function () {
+            resolve(_this.connection);
+          };_this.connection.onerror = function (error) {
+            reject(Error('Error connecting to server, please reload the page!' + error));
+          };_this.connection.onmessage = function (data) {
+            var sdata = JSON.parse(data['data']);_this.callbacks[sdata['id']](sdata['result']);
+          };
+        } else {
+          reject(Error('Your browser is too old, please get a recent one!'));
+        }
+      });
+    };ws.send = function (data, callback) {
+      this.callbacks[data['id']] = callback;var json = JSON.stringify(data);this.connection.send(json);
+    };return WebSocketWrapper;
+  }();
+  var SteemWrapper;SteemWrapper = function () {
+    var steem = SteemWrapper.prototype;function SteemWrapper(ws) {
+      this.ws = ws;this.id = 0;
+    }steem.send = function (method, params, callback) {
+      ++this.id;var data = { "id": this.id, "method": method, "params": params };this.ws.send(data, callback);
+    };return SteemWrapper;
+  }();
+
+  </script>
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Source+Serif+Pro|Source+Sans+Pro' rel='stylesheet' type='text/css'>
+<script type="text/javascript">
+
+var chart;
+var objcontent = [];
+
+var modalfilled = false;
+
+// start timer to empty object queueueue
+//
+handleObjects();
+
+var last_block = 160900;
+
+function chartloaded() {
+
+  //console.log('chartloaded');
+
+}
+
+function ajustamodal() {
+    var altura = $(window).height() - 275; //value corresponding to the modal heading + footer
+    $(".ativa-scroll").css({"height":altura,"overflow-y":"auto"});
+  }
+
+function avgpminute (count,totalminutes) {
+  return ((count/totalminutes)).toFixed(1);
+}
+	$( document ).ready(function() {
+    ajustamodal();
+
+    $('#audiobut').on('click', function() {
+
+      var bgaudio = document.getElementById('bgaudio');
+
+      if(mute) {
+        mute = false;
+        $('#audiobut').html('<span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span> Audio Off');
+        $('#audiobut').attr('title', "Click to turn Audio Off!");
+
+        bgaudio.play();
+      } else {
+        mute = true;
+        bgaudio.pause();
+        $('#audiobut').html('<span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> Audio On');
+        $('#audiobut').attr('title', "Click to turn Audio On!");
+      }
+
+    });
+
+    $("form").submit(function(e){
+            e.preventDefault();
+
+            try {
+              var users = $('#userstofollow').val();
+              var users = users.replace(/[^A-Za-z,]/g,'').toLowerCase();
+
+              usersarr = users.split(",");
+
+              console.log(users);
+              console.log(usersarr);
+
+             preffs['userstoshow'] = usersarr;
+
+             $('#userstofollow').val(preffs.userstoshow.join());
+
+             saveCookie();
+            } catch (e) {
+             throw new Error(e.message);
+            }
+            return false;
+
+
+    });
+
+
+
+    $('#desktopnotifications').change(function() {
+      preffs['desktopnotifications'] = this.checked;
+
+      if(this.checked) {
+        Push.create('Activating Notifications', {
+                body: 'OMG SUCH WOWTIFICACAO',
+                onClick: function () {
+                    window.focus();
+                    this.close();
+                },
+                vibrate: [100],
+                onError: function(e) {
+                  //console.log(e);
+                  preffs['desktopnotifications'] = false;
+                  $('#desktopnotifications').prop('checked',false);
+                  saveCookie();
+                },
+                onShow: function(e) {
+                  //console.log(e);
+                  preffs['desktopnotifications'] = true;
+                  $('#desktopnotifications').prop('checked',true);
+                  saveCookie();
+
+                },
+                icon: {
+                   x16: 'favicon-16x16.png',
+                   x32: 'favicon-32x32.png'
+               },
+                timeout: 2000,
+
+            });
+      }
+      //alert(this.checked);
+
+    });
+
+    $('#desktopnotifications').prop('checked',preffs['desktopnotifications']);
+
+    $('#userstofollow').val(preffs.userstoshow.join());
+
+    $('body').click(function() {
+
+
+      if(particlerunning){
+        particlerunning = false;
+      } else {
+        particlerunning = true;
+      }
+
+
+    });
+
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        },
+        //fontFamily: "Times New Roman"
+    });
+
+    chart = new Highcharts.Chart({
+				chart: {
+					renderTo: 'chartcontainer',
+					defaultSeriesType: 'spline',
+					events: {
+						load: chartloaded,
+					},
+          backgroundColor: null,
+          style: {
+	           fontFamily: 'Source Sans Pro,Helvetica Neue,Helvetica,Arial,sans-serif;', // default font
+
+            }
+				},
+				title: {
+					text: ''
+				},
+				xAxis: {
+					type: 'datetime',
+					//tickPixelInterval: 150,
+					maxZoom: 20 * 1000,
+          lineWidth: 0,
+				},
+				yAxis: {
+					minPadding: 0.2,
+					maxPadding: 0.2,
+					title: {
+						text: 'Amount',
+						margin: 40
+					},
+          lineWidth: 0,
+          gridLineWidth:0,
+				},
+        plotOptions: {
+           series: {
+               events: {
+                   legendItemClick: function () {
+                      //
+                       var chartserietype = this.options.typer;
+
+                       if(chartserietype) {
+                         preffs['types'][chartserietype] = !this.visible;
+                         saveCookie();
+                       }
+
+                   }
+               }
+             }
+        },
+
+				series: [{
+					name: 'Upvotes (0.00/m)',
+					data: [],
+          color: '#4ba2f2',
+          typer: 'upvote',
+          visible: preffs['types']['upvote'],
+				},
+        {
+					name: 'Downvotes (0.00/m)',
+					data: [],
+          color: '#ff0000 (0.00/m)',
+          typer: 'downvote',
+          visible: preffs['types']['downvote'],
+				},
+        {
+					name: 'Comments (0.00/m)',
+					data: [],
+          typer: 'comment',
+          visible: preffs['types']['comment'],
+				},
+        {
+					name: 'New Posts (0.00/m)',
+					data: [],
+          typer: 'newpost',
+          visible: preffs['types']['newpost'],
+				},
+        {
+					name: 'Sell Order (0.00/m)',
+					data: [],
+          typer: 'limit_order_create',
+          visible: preffs['types']['limit_order_create'],
+				},
+        {
+					name: 'Money Transfers (0.00/m)',
+					data: [],
+          typer: 'transfer',
+          visible: preffs['types']['transfer'],
+				},
+        {
+					name: 'New Users (0.00/m)',
+					data: [],
+          color: '#ffff00',
+          typer: 'account_create',
+          visible: preffs['types']['account_create'],
+				},
+        {
+					name: 'All TX (0.00/m)',
+					data: [],
+          color: '#1A5099',
+				},
+
+        //#1A5099
+        ]
+			});
+
+
+
+if (window.WebSocket){
+
+ var server = 'wss://steemd.privex.io';
+ var ws = new WebSocketWrapper(server);
+
+ ws.connect().then(function(response) {
+   var steem = new SteemWrapper(ws);
+
+   var wsocket = function() {
+   steem.send('get_dynamic_global_properties',[], function(response2) {
+     // do stuff
+//	 //console.log(response);
+     ////console.log(response2);
+
+     var block_number = response2["last_irreversible_block_num"];
+
+     //console.log('blocknumber' + block_number);
+
+     if(lastblocknum != block_number) {
+       lastblocknum = block_number;
+       blockcount++;
+/*
+     while (true) {
+
+	     		var myEfficientFn = debounce(function() {
+				// All the taxing stuff you do
+
+			              last_block += 1
+*/
+			              steem.send("get_block", [block_number], function(block) {
+						  	////console.log(err);
+
+                        $('#currentblock').html('Current block: '+block_number);
+                       //console.log('block', block);
+						  	       //
+						  	       //
+                       var ch_transactions = ch_downvotes = ch_upvotes = ch_posts = ch_comments = ch_pow = ch_limitsells = ch_transfers = ch_users = 0;
+                       //console.log('upvotes', ch_upvotes);
+
+                       //$(block.transactions).each(function(index, tx){
+                       //
+                       //
+                      ch_transactions = block.transactions.length;
+                      for(var i = 0; i < ch_transactions; i++) {
+
+                          ////console.log(tx.operations[0][0]);
+
+                          var actionobj = block.transactions[i].operations[0];
+
+
+                          switch (actionobj[0]) {
+
+                            case 'vote':
+
+                            if(actionobj[1].weight < 0) {
+                              topost = {
+                                title: '<svg width="22" height="22" style="vertical-align: text-top; margin-right:-2px;" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><g><path d="M368,112c-11,1.4-24.9,3.5-39.7,3.5c-23.1,0-44-5.7-65.2-10.2c-21.5-4.6-43.7-9.3-67.2-9.3c-46.9,0-62.8,10.1-64.4,11.2 l-3.4,2.4v2.6v161.7V416h16V272.7c6-2.5,21.8-6.9,51.9-6.9c21.8,0,42.2,8.3,63.9,13c22,4.7,44.8,9.6,69.5,9.6 c14.7,0,27.7-2,38.7-3.3c6-0.7,11.3-1.4,16-2.2V126v-16.5C379.4,110.4,374,111.2,368,112z M368,269c-11,1.4-23.9,3.5-38.7,3.5 c-23.1,0-45-4.7-66.2-9.2c-21.5-4.6-43.6-13.3-67.1-13.3c-25.7,0-41.9,3-51.9,6V118.7c6-2.5,21.9-6.8,51.9-6.8 c21.8,0,42.2,4.3,63.9,9c22,4.7,43.8,10.6,68.5,10.6c14.7,0,28.7-2,39.7-3.3L368,269L368,269z"></path></g></svg> Downvote by <a href="http://steemit.com/@'+actionobj[1].voter+'" target="_blank" target="_blank" class="user">'+actionobj[1].voter+'</a>',
+                                subtitle: 'Flagged <a href="http://steemit.com/@'+actionobj[1].author+'" target="_blank" class="user">'+actionobj[1].author+'</a>\'s <a href="http://steemit.com/steemstream/@'+actionobj[1].author+'/'+actionobj[1].permlink+'" target="_blank">post</a> with a voteweight of '+actionobj[1].weight,
+                                user: actionobj[1].voter,
+                                url: 'http://steemit.com/steemstream/@'+actionobj[1].author+'/'+actionobj[1].permlink
+                              }
+                              ch_downvotes++;
+                              actionobj[0] = 'downvote';
+
+                            } else {
+
+                              topost = {
+                                title: '<svg width="22" height="22" style="vertical-align: text-top; margin-right:-2px;" enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#4ba2f2" fill="#4ba2f2"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#fff"></path></g></svg> Upvote by <a href="http://steemit.com/@'+actionobj[1].voter+'" target="_blank" target="_blank" class="user">'+actionobj[1].voter+'</a>',
+                                subtitle: 'Voted on <a href="http://steemit.com/@'+actionobj[1].author+'" target="_blank" class="user">'+actionobj[1].author+'</a>\'s <a href="http://steemit.com/steemstream/@'+actionobj[1].author+'/'+actionobj[1].permlink+'" target="_blank">post</a> with a voteweight of '+actionobj[1].weight,
+                                user: actionobj[1].voter,
+                                url: 'http://steemit.com/steemstream/@'+actionobj[1].author+'/'+actionobj[1].permlink
+                              }
+                              actionobj[0] = 'upvote';
+                              ch_upvotes++;
+                            }
+
+
+                            break;
+
+                            case 'comment':
+                            if(actionobj[1].title != '') {
+                              topost = {
+                                title: '&#128214; Post by <a href="http://steemit.com/@'+actionobj[1].author+'" target="_blank" target="_blank" class="user">'+actionobj[1].author+'</a>',
+                                subtitle: '<a href="http://steemit.com/steemstream/@'+actionobj[1].author+'/'+actionobj[1].permlink+'" target="_blank">'+actionobj[1].title+'</a>',
+                                user: actionobj[1].author,
+                                url: 'http://steemit.com/steemstream/@'+actionobj[1].author+'/'+actionobj[1].permlink
+                              }
+                              actionobj[0] = 'newpost';
+                              ch_posts++;
+                            }  else {
+
+                              var url = false;
+
+                              topost = {
+                                title: '&#128172; Comment by <a href="http://steemit.com/@'+actionobj[1].author+'" target="_blank" target="_blank" class="user">'+actionobj[1].author+'</a>',
+                                subtitle: 'On a post '+actionobj[1].title,
+                                user: actionobj[1].author,
+                                url: false,
+                              }
+                              actionobj[0] = 'comment';
+                              ch_comments++;
+                            }
+                            break;
+
+                            case 'transfer':
+                            topost = {
+                              title: '&#128184; Transfer of '+actionobj[1].amount+' from <a href="http://steemit.com/@'+actionobj[1].from+'" target="_blank" target="_blank" class="user">'+actionobj[1].from+'</a> to <a href="http://steemit.com/@'+actionobj[1].to+'" target="_blank" target="_blank" class="user">'+actionobj[1].to+'</a>',
+                              subtitle: 'Memo: '+actionobj[1].memo,
+                              user: actionobj[1].from,
+                              url: 'http://steemit.com/@'+actionobj[1].from+'/transfers',
+
+                            }
+                            ch_transfers++;
+                            break;
+
+                            case 'account_create':
+                            topost = {
+                              title: '&#128587; New user \'<a href="http://steemit.com/@'+actionobj[1].new_account_name+'" target="_blank" target="_blank" class="user">'+actionobj[1].new_account_name+'</a>\' on Steemit!',
+                              subtitle: 'User received '+ actionobj[1].fee,
+                              user: actionobj[1].new_account_name,
+                              url: 'http://steemit.com/@'+actionobj[1].new_account_name,
+                            }
+                            ch_users++;
+                            break;
+
+                            case 'limit_order_create':
+
+                            var amount_to_sell = actionobj[1].amount_to_sell.toLowerCase();
+                            var min_to_receive = actionobj[1].min_to_receive.toLowerCase();
+
+                            var actionverb = 'wants to sell Steem';
+                            var sdpersteem = 0;
+
+
+                            if(amount_to_sell.indexOf('sbd') > -1) {
+                              actionverb = 'wants to buy Steem';
+                              sdpersteem = (amount_to_sell.replace("sbd", "").trim() / min_to_receive.replace("steem","").trim()).toFixed(8);
+
+                            } else {
+                              sdpersteem = (min_to_receive.replace("sbd","").trim() / amount_to_sell.replace("steem", "").trim()).toFixed(8);
+                            }
+                            topost = {
+                              title: '&#128181; <a href="http://steemit.com/@'+actionobj[1].owner+'" target="_blank" target="_blank" class="user">'+actionobj[1].owner+'</a> '+actionverb+' for '+sdpersteem+' SD/STEEM',
+                              subtitle: 'Order Id: <a href="http://steemit.com/market" target="_blank">'+actionobj[1].orderid+'</a>: Limit order to sell '+actionobj[1].amount_to_sell+' for '+actionobj[1].min_to_receive,
+                              user: actionobj[1].owner,
+                              url: 'http://steemit.com/market',
+                            }
+
+                            ch_limitsells++;
+
+                            break;
+
+                            case 'account_update':
+
+                            topost = {
+                              title: '&#128259; Account of <a href="http://steemit.com/@'+actionobj[1].account+'" target="_blank" target="_blank" class="user">'+actionobj[1].account+'</a> was updated',
+                              subtitle: '',
+                              user: actionobj[1].account,
+                              url: 'http://steemit.com/@'+actionobj[1].account
+                            }
+
+                            break;
+
+                            case 'limit_order_cancel':
+                              //{"owner":"adm","orderid":1468415371}'
+                            //
+                            // case 'pow':
+                            //
+                            topost = {
+                              title: '&#10060; Cancelled offer to sell by <a href="http://steemit.com/@'+actionobj[1].owner+'" target="_blank" target="_blank" class="user">'+actionobj[1].owner+'</a>',
+                              subtitle: 'Order Id: <a href="http://steemit.com/market" target="_blank">'+actionobj[1].orderid+'</a>',
+                              user: actionobj[1].owner,
+                              url: false,
+                            }
+
+                            break;
+
+                            case 'pow':
+
+                            topost = {
+                              title: '&#128119; Miner Proof of Work by <a href="http://steemit.com/@'+actionobj[1].worker_account+'" target="_blank" target="_blank" class="user">'+actionobj[1].worker_account+'</a>',
+                              subtitle: 'Block Id: '+actionobj[1].block_id,
+                              user: actionobj[1].worker_account,
+                              url: 'http://steemit.com/@'+actionobj[1].worker_account,
+                            }
+                            ch_pow++;
+
+                            break;
+
+                            default:
+                            actionobj[0] = false;
+                            topost = false;
+                          }
+
+                          if(topost) {
+
+                            // check if the actionobj[0] exists in prefs...
+                            if(actionobj[0]) {
+
+                              //console.log(p);
+                              if(preffs['types'][actionobj[0]] == 1) {
+                                topost['class'] = actionobj[0];
+                                objcontent.push(topost);
+
+
+                                // desktop notifify if user is being followed by us...
+                                //
+                                if(preffs['userstoshow'].indexOf(topost['user'].toLowerCase()) >= 0) {
+
+
+
+
+                                Push.create($('<div>').html(topost['title']).text(), {
+                                        body:  $('<div>').html(topost['subtitle']).text(),
+                                        onClick: function () {
+                                            //window.focus();
+                                            //this.close();
+                                            if(topost['url']) {
+                                              window.open(topost['url'], '_blank');
+                                            } else {
+
+                                              window.focus();
+                                            }
+                                            this.close();
+                                        },
+                                        vibrate: [100],
+                                        onError: function(e) {
+                                          //console.log(e);
+                                          preffs['desktopnotifications'] = false;
+                                          $('#desktopnotifications').prop('checked',false);
+                                          saveCookie();
+                                        },
+                                        onShow: function(e) {
+                                          //console.log(e);
+                                          preffs['desktopnotifications'] = true;
+                                          $('#desktopnotifications').prop('checked',true);
+                                          saveCookie();
+
+                                        },
+                                        icon: {
+                                           x16: 'favicon-16x16.png',
+                                           x32: 'favicon-32x32.png'
+                                       },
+                                        timeout: 2000,
+
+                                    });
+
+                                  }
+                              }
+
+
+                              if(preffs['userstoshow'].indexOf(topost['user'].toLowerCase()) >= 0) {
+                                // if user is in a list...
+                                //
+                                if(!modalfilled) {
+                                  $('#modalfall').html('');
+                                  modalfilled = true;
+                                }
+                                addModal(topost);
+                              }
+
+
+
+                            }
+                            //console.log(objcontent);
+                          }
+
+                       } // foreach
+
+
+                       var series_upvote = chart.series[0];
+                       shift = series_upvote.data.length > 20;
+            						 // shift if the series is longer than 20
+
+            					// add the point
+            					//
+            					//console.log('upvotes', ch_upvotes);
+
+                      var blockdate = new Date();
+                      var ts = blockdate.getTime();
+
+
+            					chart.series[0].addPoint(eval([ts, ch_upvotes]), true, shift);
+                      chart.series[1].addPoint(eval([ts, ch_downvotes]), true, shift);
+                      chart.series[2].addPoint(eval([ts, ch_comments]), true, shift);
+                      chart.series[3].addPoint(eval([ts, ch_posts]), true, shift);
+                      chart.series[4].addPoint(eval([ts, ch_limitsells]), true, shift);
+                      chart.series[5].addPoint(eval([ts, ch_transfers]), true, shift);
+                      chart.series[6].addPoint(eval([ts, ch_users]), true, shift);
+                      chart.series[7].addPoint(eval([ts, ch_transactions]), true, shift);
+
+
+
+                      tot_upvotes = tot_upvotes + ch_upvotes;
+                      tot_downvotes = tot_downvotes + ch_downvotes;
+                      tot_comments = tot_comments + ch_comments;
+                      tot_posts = tot_posts + ch_posts;
+                      tot_limitsells = tot_limitsells + ch_limitsells;
+                      tot_transfers = tot_transfers + ch_transfers;
+                      tot_users = tot_users + ch_users;
+                      tot_transactions = tot_transactions + ch_transactions;
+                      var timenow = new Date().getTime();
+                      var totminutes = ((timenow - scriptstart) / 1000) / 60;
+                      chart.series[0].name='Upvotes ('+avgpminute(tot_upvotes,totminutes) +'/m)';
+                      chart.series[1].name='Downvotes ('+avgpminute(tot_downvotes,totminutes) +'/m)';
+
+                      chart.series[2].name='Comments ('+avgpminute(tot_comments,totminutes) +'/m)';
+
+                      chart.series[3].name='Posts ('+avgpminute(tot_posts,totminutes) +'/min.)';
+                      chart.series[4].name='Sell Order ('+avgpminute(tot_limitsells,totminutes) +'/m)';
+                      chart.series[5].name='Money Transfers ('+avgpminute(tot_transfers,totminutes) +'/m)';
+                      chart.series[6].name='New Users ('+avgpminute(tot_users,totminutes) +'/m)';
+                      chart.series[7].name='All TX ('+avgpminute(tot_transactions,totminutes) +'/m)';
+                      chart.render();
+
+
+
+			              }); // ws block
+
+        }
+
+        setTimeout(wsocket,1000);
+
+
+   });
+
+
+ };
+
+ wsocket();
+
+ });
+
+ } else {
+
+   alert('Unfortunately - your browser does not support websocket and therefore not this realtime view of the Steem blockchain... ');
+
+ }
+
+ });
+
+</script>
+<script type="text/javascript">
+
+var img_upvote;
+
+var particlerunning = true;
+	var system;
+var canvas;
+var width = window.innerWidth;
+var height = window.innerHeight;
+
+function setup() {
+  canvas = createCanvas(window.innerWidth, window.innerHeight);
+  canvas.parent('sketch-holder');
+
+
+  system = new ParticleSystem(createVector(width/2, height/2));
+}
+
+window.onresize = function() {
+  //console.log('window resize');
+  var w = window.innerWidth;
+  var h = window.innerHeight;
+   //resizeCanvas(w, h);
+  width = w;
+  height = h;
+  ajustamodal();
+};
+
+
+function draw() {
+  background(255);
+  //system.addParticle();
+  //system.run();
+}
+
+// A simple Particle class
+var Particle = function(position) {
+  this.acceleration = createVector(0, 0.005);
+  //this.velocity = createVector(random(-1, 1), random(-1, 0));
+  this.velocity = createVector(random(-8, 8), random(-5, 5));
+  this.position = position.copy();
+  this.lifespan = 150.0;
+  //this.rotation = rotate(5);
+
+};
+
+Particle.prototype.run = function() {
+  this.update();
+  this.display();
+};
+
+// Method to update position
+Particle.prototype.update = function(){
+  this.velocity.add(this.acceleration);
+  this.position.add(this.velocity);
+  //rotate(PI/3.0);
+
+  this.lifespan -= 2;
+};
+
+// Method to display
+Particle.prototype.display = function() {
+  stroke(color('#4ba2f2'), this.lifespan);
+  strokeWeight(1);
+
+
+  fill(color('#4ba2f2'), this.lifespan);
+  ellipse(this.position.x, this.position.y, 25, 25);
+  stroke(255);
+
+  line(this.position.x, this.position.y-5, this.position.x+8, this.position.y+2);
+  line(this.position.x-8, this.position.y+2, this.position.x, this.position.y-5);
+  //image(img_upvote, this.position.x, this.position.y, 20,20);
+};
+
+// Is the particle still useful?
+Particle.prototype.isDead = function(){
+  if (this.lifespan < 0) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+var ParticleSystem = function(position) {
+  this.origin = position.copy();
+  this.particles = [];
+};
+
+ParticleSystem.prototype.addParticle = function() {
+  this.particles.push(new Particle(this.origin));
+};
+
+ParticleSystem.prototype.run = function() {
+  if(particlerunning) {
+    for (var i = this.particles.length-1; i >= 0; i--) {
+      var p = this.particles[i];
+      p.run();
+      if (p.isDead()) {
+        this.particles.splice(i, 1);
+      }
+    }
+  }
+};
+
+</script>
+<style type="text/css">
+	html, body {
+		margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Source Sans Pro,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-weight: 400;
+	}
+
+  #sketch-holder {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 0 !important;
+  }
+
+  #waterfallouter {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding-top: 0;
+    display: block;
+    background-color: rgba(255,255,255,0.8);
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  #waterfall {
+    padding-top: 55px;
+
+  }
+
+  #chartcontainer {
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: block;
+
+    width: 100%;
+    height: 33%;
+    z-index: 2;
+
+
+background: rgba(255,255,255,0);
+background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.07) 7%, rgba(255,255,255,0.91) 74%, rgba(255,255,255,0.95) 77%);
+background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,0)), color-stop(7%, rgba(255,255,255,0.07)), color-stop(74%, rgba(255,255,255,0.91)), color-stop(77%, rgba(255,255,255,0.95)));
+background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.07) 7%, rgba(255,255,255,0.91) 74%, rgba(255,255,255,0.95) 77%);
+background: -o-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.07) 7%, rgba(255,255,255,0.91) 74%, rgba(255,255,255,0.95) 77%);
+background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.07) 7%, rgba(255,255,255,0.91) 74%, rgba(255,255,255,0.95) 77%);
+background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.07) 7%, rgba(255,255,255,0.91) 74%, rgba(255,255,255,0.95) 77%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=0 );
+
+  }
+
+  #modalinfo {
+    width: auto;
+    height: 200px;
+    display: block;
+    vertical-align: middle;
+    float: none;
+    line-height: 200px;
+    text-align:center;
+  }
+
+  #settingsbut {
+
+    position:absolute;
+    right: 0px;
+    top: 50px;
+    display: block;
+    width: 140px;
+    height: 35px;
+    font-size: 20px;
+    line-height: 30px;
+    padding-top: 5px;
+    background-color: #4ba2f2;
+    z-index: 3;
+    color: white;
+    text-align:center;
+    border-radius: 3px;
+    cursor:pointer;
+
+  }
+
+  #audiobut {
+
+    position:absolute;
+    left: 0px;
+    top: 50px;
+    display: block;
+    width: 140px;
+    height: 35px;
+    font-size: 20px;
+    line-height: 30px;
+    padding-top: 5px;
+    background-color: #4ba2f2;
+    z-index: 3;
+    color: white;
+    text-align:center;
+    border-radius: 3px;
+    cursor:pointer;
+
+  }
+
+  .waterfallitem {
+    display: block;
+    padding: 10px;
+    text-align: center;
+
+  }
+
+  .title {
+
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+
+  }
+
+  .undertitle {
+
+    font-family: Helvetica Neue,Helvetica,Verdana,Arial,sans-serif !important;
+    color: #666 !important;
+    line-height: 1.4 !important;
+    font-size: 16px !important;
+  }
+
+  a {
+    color: #1a5099 !important;
+    text-decoration: none !important;
+  }
+
+  .user {
+    font-family: 'Source Serif Pro', serif !important;
+  }
+
+  .Header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 100 !important;
+    display: block !important;
+
+}
+
+.Header .header {
+  backdrop-filter: blur(10px) !important;
+  background-color: rgba(254,254,254,0.9) !important;
+    border-bottom: 1px solid #e6e6e6 !important;
+
+}
+
+blockquote, dd, div, dl, dt, form, h1, h2, h3, h4, h5, h6, li, ol, p, pre, td, th, ul {
+    margin: 0;
+    padding: 0;
+}
+
+.Header .menu {
+  backdrop-filter: blur(10px) !important;
+  background-color: rgb(254,254,254,0.8) !important;
+  padding-left: 0 !important;
+}
+.menu {
+    margin: 0 !important;
+    list-style-type: none !important;
+    width: 100% !important;
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-wrap: nowrap !important;
+    -webkit-box-align: center !important;
+    -ms-flex-align: center !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+
+}
+
+.Header__top ul>li>a {
+    font-size: 18px !important;
+}
+
+.menu>li>a {
+    display: block !important;
+    padding: .7rem .7rem !important;
+    line-height: 1.5 !important;
+}
+a {
+    color: #1a5099 !important;
+    text-decoration: none !important;
+    line-height: inherit !important;
+    cursor: pointer !important;
+}
+
+.menu>li {
+    -webkit-box-flex: 0 !important;
+    -ms-flex: 0 0 auto !important;
+    flex: 0 0 auto !important;
+}
+.Header__top-steemit {
+    margin-right: -22px !important;
+}
+li {
+    font-size: inherit;
+}
+
+.Header__top-steemit .beta {
+    position: relative !important;
+    top: 5px !important;
+    right: 24px !important;
+    font-size: .7rem !important;
+    color: #4ba2f2 !important;
+}
+
+#infomenu .beta  {
+    position: relative !important;
+    top: 12px !important;
+    right: 60px !important;
+    font-size: 10px !important;
+    color: #4ba2f2 !important;
+}
+
+#currentblock {
+
+  position: absolute;
+  left: 50%;
+  margin-left: -90px;
+  width: 180px;
+  height: 55px;
+  top: 30px;
+  font-family: 'Source Serif Pro', serif;
+  font-size: 15px;
+  color: #ccc;
+  text-align: center;
+  display: block;
+  z-index: 101;
+  vertical-align: bottom;
+  line-height: 55px;
+
+}
+
+
+*, :after, :before {
+    box-sizing: inherit;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+#infomenu {
+  background: none;
+  float:right;
+  height: 45px;
+  position:absolute;
+  right: 0px;
+  top: 0px;
+  line-height: 45px;
+  vertical-align: center;
+}
+</style>
+
+</head>
+<body>
+<Header class="Header">
+<div class="Header__top header">
+  <div class="expanded row">
+    <div class="columns">
+      <ul class="menu">
+        <li class="Header__top-logo">
+        <a href="/" style="margin-left: 15px;">
+          <span class="Icon steem Icon_2x" style="display: inline-block; width: 2rem; height: 2rem; padding-left:5px; padding-top: 0px;">
+            <svg width="28" height="29" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" style="margin-top:4px; margin-bottom:-4px;">
+ <g>
+  <g transform="rotate(90 13.996265411376955,14.572190284729004) " id="svg_1" fill-rule="evenodd" fill="none">
+   <g id="steem">
+    <path fill="#1A5099" id="Fill-1" d="m4.22924,3.23196c-0.28435,-0.14192 -3.89137,2.83953 -3.89137,5.03304c-0.00498,2.99811 4.20746,9.79028 4.9168,12.41755c0.6104,2.25336 -1.03538,4.95777 -0.58303,5.08056c0.41316,0.26532 4.34312,-3.71447 4.49618,-5.41128c0.19725,-2.70194 -4.58889,-10.58068 -4.97031,-12.615c-0.4424,-2.3743 0.35031,-4.45181 0.03173,-4.50487l0,0l0,0z"/>
+    <path fill="#4BA2F2" id="Fill-2" d="m13.23218,0.13019c-0.36214,-0.18079 -4.96347,3.6176 -4.96347,6.41826c-0.00498,3.82306 5.36667,12.48542 6.27076,15.83276c0.77777,2.87347 -1.31974,6.32262 -0.74605,6.47688c0.53014,0.33689 5.53902,-4.73379 5.73627,-6.90077c0.25262,-3.44421 -5.85325,-13.48994 -6.3392,-16.08821c-0.56373,-3.02032 0.44489,-5.67166 0.04169,-5.73892l0,0l0,0z"/>
+    <path fill="#1A5099" id="Fill-3" d="m22.52382,3.23196c-0.28186,-0.14192 -3.89138,2.83953 -3.89138,5.03304c-0.00435,2.99811 4.20747,9.79028 4.91743,12.41755c0.60977,2.25336 -1.03538,4.95777 -0.58365,5.08056c0.41565,0.26532 4.34622,-3.71447 4.4968,-5.41128c0.19662,-2.70194 -4.58889,-10.58068 -4.97093,-12.615c-0.44178,-2.3743 0.35031,-4.45181 0.03173,-4.50487l0,0z"/>
+   </g>
+  </g>
+ </g>
+</svg>
+          </span>
+        </a>
+        </li>
+      <li class="Header__top-steemit show-for-medium"><a href="/">steem stream</a></li>
+
+    </ul>
+
+
+
+
+  </div>
+
+  <div id="infomenu" style="margin-right: -20px;">
+    <a href="https://steemit.com/steemit/@roelandp/steemstream-v3-featuring-sound-adding-a-mesmerizing-track-to-the-pulse-of-steem" style="line-height:inherit; vertical-align:middle; margin-right: 0px;" title="Learn more &amp; Upvote this tool on Steemit!">
+      <svg xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right:3px;" viewBox="0 0 250 250" width="15" height="15"><circle cx="125" cy="125" r="125" fill="#4BA2F2"/><g fill="#fff"><circle cx="120" cy="60" r="20"/><path d="M86,95h56v90h19v18H86V185h18V110H86z"/></g></svg>
+      by @roelandp <span class="beta">learn more <svg width="12" height="12" style="vertical-align: middle; margin-right:2px;" enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#4ba2f2" fill="#4ba2f2"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#fff"></path></g></svg></span>
+    </a>
+  </div>
+
+
+</div>
+
+
+
+</div>
+
+</Header>
+
+
+  <div id="currentblock">
+
+  </div>
+
+<div id="sketch-holder">
+</div>
+
+<div id="waterfallouter">
+
+  <audio loop="true" id="bgaudio">
+    <source src="audio/background.ogg"/>
+    <source src="audio/background.mp3" />
+  </audio>
+
+  <div id="audiobut" title="Click to turn Audio On!"><span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> Audio On
+  </div>
+  <div id="settingsbut" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Filter Users
+  </div>
+  <div id="waterfall">
+  </div>
+
+</div>
+
+<div id="chartcontainer">
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Filter Users</h4>
+        <form class="form-inline">
+  <div class="form-group" style="padding-right:15px;">
+    <input type="input" class="form-control" id="userstofollow" placeholder="comma seperate usernames you want to monitor" style="width:300px;">
+  </div>
+
+  <div class="checkbox" style="padding-right:15px;">
+    <label>
+      <input type="checkbox" id="desktopnotifications"> Desktop Notifications?
+    </label>
+  </div>
+  <button type="submit" class="btn btn-default">Save</button>
+</form>
+      </div>
+      <div class="modal-body ativa-scroll">
+        <div id="modalfall">
+          <div id="modalinfo" style="text-align:center;">
+            All activity from tracked users will appear here.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="text-align:center;">
+        <a href="https://steemit.com/steemit/@roelandp/steemstream-v3-featuring-sound-adding-a-mesmerizing-track-to-the-pulse-of-steem" type="button" class="btn btn-default" target="_blank">Learn More About SteemStreamer V2</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"  style="display:none">
+<!--
+/**
+* Push
+* =======
+* A compact, cross-browser solution for the JavaScript Notifications API
+*
+* Credits
+* -------
+* Tsvetan Tsvetkov (ttsvetko)
+* Alex Gibson (alexgibson)
+*
+* License
+* -------
+*
+* The MIT License (MIT)
+*
+* Copyright (c) 2015 Tyler Nickerson
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*
+* @preserve
+*/
+(function(global,factory){"use strict";if(typeof define==="function"&&define.amd){define(function(){return new(factory(global,global.document))})}else if(typeof module!=="undefined"&&module.exports){module.exports=new(factory(global,global.document))}else{global.Push=new(factory(global,global.document))}})(typeof window!=="undefined"?window:this,function(w,d){var Push=function(){var self=this,isUndefined=function(obj){return obj===undefined},isString=function(obj){return String(obj)===obj},isFunction=function(obj){return obj&&{}.toString.call(obj)==="[object Function]"},incompatibilityErrorMessage="PushError: push.js is incompatible with browser.",hasPermission=false,notifications=[],closeNotification=function(notification){if(notification.close){notification.close()}else if(notification.cancel){notification.cancel()}else if(w.external&&w.external.msIsSiteMode){w.external.msSiteModeClearIconOverlay()}else{throw new Error("Unable to close notification: unknown interface")}},updateCount=function(){self.count=notifications.length},createCallback=function(title,options){var notification,wrapper;options=options||{};if(w.Notification){try{notification=new w.Notification(title,{icon:isString(options.icon)||isUndefined(options.icon)?options.icon:options.icon.x32,body:options.body,tag:options.tag})}catch(e){if(w.navigator){w.navigator.serviceWorker.register("sw.js");w.navigator.serviceWorker.ready.then(function(registration){registration.showNotification(title,{body:options.body,vibrate:options.vibrate,tag:options.tag})})}}}else if(w.webkitNotifications){notification=w.webkitNotifications.createNotification(options.icon,title,options.body);notification.show()}else if(navigator.mozNotification){notification=navigator.mozNotification.createNotification(title,options.body,options.icon);notification.show()}else if(w.external&&w.external.msIsSiteMode()){w.external.msSiteModeClearIconOverlay();w.external.msSiteModeSetIconOverlay(isString(options.icon)||isUndefined(options.icon)?options.icon:options.icon.x16,title);w.external.msSiteModeActivate();notification={}}else{throw new Error("Unable to create notification: unknown interface")}wrapper={close:function(){closeNotification(notification)}};notifications.push(notification);updateCount();if(options.timeout){setTimeout(function(){wrapper.close()},options.timeout)}if(isFunction(options.onShow))notification.addEventListener("show",options.onShow);if(isFunction(options.onError))notification.addEventListener("error",options.onError);if(isFunction(options.onClick))notification.addEventListener("click",options.onClick);if(isFunction(options.onClose)){notification.addEventListener("close",options.onClose);notification.addEventListener("cancel",options.onClose)}return wrapper},Permission={DEFAULT:"default",GRANTED:"granted",DENIED:"denied"},Permissions=[Permission.GRANTED,Permission.DEFAULT,Permission.DENIED];self.Permission=Permission;self.count=0;self.Permission.request=function(onGranted,onDenied){if(!self.isSupported){throw new Error(incompatibilityErrorMessage)}callback=function(result){switch(result){case self.Permission.GRANTED:hasPermission=true;if(onGranted)onGranted();break;case self.Permission.DENIED:hasPermission=false;if(onDenied)onDenied();break}};if(w.Notification&&w.Notification.requestPermission){Notification.requestPermission(callback)}else if(w.webkitNotifications&&w.webkitNotifications.checkPermission){w.webkitNotifications.requestPermission(callback)}else{throw new Error(incompatibilityErrorMessage)}};self.Permission.has=function(){return hasPermission};self.Permission.get=function(){var permission;if(!self.isSupported){throw new Error(incompatibilityErrorMessage)}if(w.Notification&&w.Notification.permissionLevel){permission=w.Notification.permissionLevel}else if(w.webkitNotifications&&w.webkitNotifications.checkPermission){permission=Permissions[w.webkitNotifications.checkPermission()]}else if(w.Notification&&w.Notification.permission){permission=w.Notification.permission}else if(navigator.mozNotification){permission=Permissions.GRANTED}else if(w.external&&w.external.msIsSiteMode()!==undefined){permission=w.external.msIsSiteMode()?Permission.GRANTED:Permission.DEFAULT}else{throw new Error(incompatibilityErrorMessage)}return permission};self.isSupported=function(){var isSupported=false;try{isSupported=!!(w.Notification||w.webkitNotifications||navigator.mozNotification||w.external&&w.external.msIsSiteMode()!==undefined)}catch(e){}return isSupported}();self.create=function(title,options){if(!self.isSupported){throw new Error(incompatibilityErrorMessage)}if(!isString(title)){throw new Error("PushError: Title of notification must be a string")}if(!self.Permission.has()){return new Promise(function(resolve,reject){self.Permission.request(function(){try{resolve(createCallback(title,options))}catch(e){reject(e)}},function(){reject("Permission request declined")})})}else{return new Promise(function(resolve,reject){try{resolve(createCallback(title,options))}catch(e){reject(e)}})}};self.close=function(tag){var i,notification;for(i=0;i<notifications.length;i++){notification=notifications[i];if(notification.tag===tag){closeNotification(notification);notifications.splice(i,1);updateCount();return}}};self.clear=function(){var i;for(i=0;i<notifications.length;i++){closeNotification(notifications[i])}notifications=[];updateCount()}};return Push});
+//-->
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-80727259-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>
