@@ -1,0 +1,316 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+   
+
+    <title>Steem.cool | @(0) Reputation</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+    <!-- Theme CSS -->
+    <link href="css/grayscale.css" rel="stylesheet">
+    
+    
+    
+    <style>
+	
+
+
+ul {
+  margin: auto;
+  height: 10px;
+  width: 400px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  display: block;
+  float: left;
+  width: 35px;
+  height: 10px;
+  margin-right: 5px;
+}
+
+
+
+li:nth-child(1) {
+  -webkit-animation: pulse 1s alternate infinite;
+  -moz-animation: pulse 1s alternate infinite;
+}
+
+
+li:nth-child(-n+1) {
+  background: rgba(255,255,255,0.9);
+  box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                    0px 0px 20px rgba(117,182,214,0.5);
+}
+
+li:nth-child(n+2) {
+  box-shadow: inset 0px 0px 10px 1px rgba(117,182,255,0.4),
+                    0px 0px 20px rgba(117,182,255,0.1);
+}
+
+
+
+@-webkit-keyframes pulse {
+  0% {
+    background: rgba(255,255,255,1);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 40px 2px rgba(105,135,255,1);
+  }
+  100% {
+    background: rgba(255,255,255,0);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 30px 2px rgba(105,135,255,0.3);
+  }
+}
+  
+@-moz-keyframes pulse {
+  0% {
+    background: rgba(255,255,255,1);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 40px 2px rgba(105,135,255,1);
+  }
+  100% {
+    background: rgba(255,255,255,0);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 30px 2px rgba(105,135,255,0.3);
+  }
+}
+</style>
+
+
+
+  
+
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                
+                                  	<a class="navbar-brand page-scroll" href="#">
+                                    <i class="fa fa-play-circle"></i> <span class="light">LAST UPDATED </span> | 
+                    01/01 12:00 AM                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+                   
+                     <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                   
+                   
+                    
+                   
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Intro Header -->
+    <header class="intro">
+        <div class="intro-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                    
+                                            
+                        <h1 class="brand-heading">Add A Steemit Username!</h1>
+                        <p class="intro-text" id='vest'>
+                       
+                        Example: http://steem.cool/@Username<br/><br/>
+                        
+                                               
+                       <form method="post"><input type='text' name='username' value='@' onChange="this.form.submit();" style="background-color:#666"></form> <font size="+1"><i>Enter Username</i> <font size='-1'>(THEN HIT ENTER)</font></font><br/>
+                           <font size="-1"> <br>Created by <a href='https://steemit.com/@blueorgy'>@blueorgy</a> | UpVote <a href='https://steemit.com/@blueorgy'> The Post Here </a> If you like the APP!</font>
+                           </p>
+                            
+                            
+                        <a href="#about" class="btn btn-circle page-scroll">
+                            <i class="fa fa-angle-double-down animated"></i>
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="container content-section text-center">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <h2>Reputation</h2>
+                
+                <b>Formula for Calculating Reputation </b><br><br>
+                
+                 <font size="+2"><b>((log10(abs(reputation#))-9)9)+25</b></font>
+                
+                <!--<b>Formula for Reputation giving</b>
+                
+                <!--<p><b>Vs:</b> Vesting shares | <b>Vp:</b> Voting power </p>
+                <p>(Vs*5.08)*(Vp/100)</p>
+                
+                <b>Rules Of Reputation</b>
+                
+                <b><a href='http://steemit.com/@dantheman' target='_blank'>@dantheman</a></b>
+                <p>Reputation scores work like earthquake richter scales, they operate on log base 10. In other words a reputation level 8 is 10 times stronger than reputation level 7. Likewise, -8 is 10 times more negative than -7.</p>
+
+				<p>Those with weaker reputations are unable to harm the reputation of those with strong reputation.</p>-->
+
+
+
+               
+            </div>
+        </div>
+    </section>
+
+   
+  
+    <!-- Contact Section -->
+    <section id="contact" class="container content-section text-center">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+            
+                    <h2>Latest Activity</h2>
+                    <p>Latest Accounts to be <i>SteemCooled</i></p>
+                    <center>
+                    <table width='350px'>
+                    <tr><td><b>Username</b></td><td align="right"><b>Date & Time</b></td></tr>
+                    <tr><td><a href='http://steem.cool/@leemlaframboise'>@leemlaframboise</a></td><td align=right> 07/01 2:32 AM</td></tr><tr><td><a href='http://steem.cool/@alexwonderful'>@alexwonderful</a></td><td align=right> 07/01 2:29 AM</td></tr><tr><td><a href='http://steem.cool/@ausbitbank'>@ausbitbank</a></td><td align=right> 07/01 2:28 AM</td></tr><tr><td><a href='http://steem.cool/@XXX'>@XXX</a></td><td align=right> 07/01 2:27 AM</td></tr><tr><td><a href='http://steem.cool/@aschatria'>@aschatria</a></td><td align=right> 07/01 2:23 AM</td></tr><tr><td><a href='http://steem.cool/@lx-bmx'>@lx-bmx</a></td><td align=right> 07/01 2:22 AM</td></tr><tr><td><a href='http://steem.cool/@fraser'>@fraser</a></td><td align=right> 07/01 2:22 AM</td></tr><tr><td><a href='http://steem.cool/@allangraves'>@allangraves</a></td><td align=right> 07/01 2:11 AM</td></tr><tr><td><a href='http://steem.cool/@kiriatjrb'>@kiriatjrb</a></td><td align=right> 07/01 2:10 AM</td></tr><tr><td><a href='http://steem.cool/@mrrifat'>@mrrifat</a></td><td align=right> 07/01 2:10 AM</td></tr><tr><td><a href='http://steem.cool/@sabih'>@sabih</a></td><td align=right> 07/01 2:05 AM</td></tr><tr><td><a href='http://steem.cool/@kosimoos'>@kosimoos</a></td><td align=right> 07/01 1:58 AM</td></tr><tr><td><a href='http://steem.cool/@a-hitler'>@a-hitler</a></td><td align=right> 07/01 1:49 AM</td></tr><tr><td><a href='http://steem.cool/@chekohler'>@chekohler</a></td><td align=right> 07/01 1:45 AM</td></tr><tr><td><a href='http://steem.cool/@bhaski'>@bhaski</a></td><td align=right> 07/01 1:44 AM</td></tr><tr><td><a href='http://steem.cool/@ceske.palivo'>@ceske.palivo</a></td><td align=right> 07/01 1:38 AM</td></tr><tr><td><a href='http://steem.cool/@steemengine1'>@steemengine1</a></td><td align=right> 07/01 1:34 AM</td></tr><tr><td><a href='http://steem.cool/@isshappy'>@isshappy</a></td><td align=right> 07/01 1:34 AM</td></tr><tr><td><a href='http://steem.cool/@nextgencrypto'>@nextgencrypto</a></td><td align=right> 07/01 1:32 AM</td></tr><tr><td><a href='http://steem.cool/@sandeeptgs'>@sandeeptgs</a></td><td align=right> 07/01 1:32 AM</td></tr><tr><td><a href='http://steem.cool/@zcgolf16'>@zcgolf16</a></td><td align=right> 07/01 1:31 AM</td></tr><tr><td><a href='http://steem.cool/@cre47iv3'>@cre47iv3</a></td><td align=right> 07/01 1:28 AM</td></tr><tr><td><a href='http://steem.cool/@lanceman'>@lanceman</a></td><td align=right> 07/01 1:27 AM</td></tr><tr><td><a href='http://steem.cool/@fernando-sanz'>@fernando-sanz</a></td><td align=right> 07/01 1:27 AM</td></tr><tr><td><a href='http://steem.cool/@dazedconfused11'>@dazedconfused11</a></td><td align=right> 07/01 1:26 AM</td></tr><tr><td><a href='http://steem.cool/@arelb12'>@arelb12</a></td><td align=right> 07/01 1:25 AM</td></tr><tr><td><a href='http://steem.cool/@Ãƒâ€˜Ã‹â€ Ãƒâ€˜Ã¢â‚¬Å¡�'>@Ãƒâ€˜Ã‹â€ Ãƒâ€˜Ã¢â‚¬Å¡�</a></td><td align=right> 07/01 1:24 AM</td></tr><tr><td><a href='http://steem.cool/@cesinfenianos'>@cesinfenianos</a></td><td align=right> 07/01 1:24 AM</td></tr><tr><td><a href='http://steem.cool/@enjoy-life'>@enjoy-life</a></td><td align=right> 07/01 1:24 AM</td></tr><tr><td><a href='http://steem.cool/@thisbisenbrick'>@thisbisenbrick</a></td><td align=right> 07/01 1:22 AM</td></tr><tr><td><a href='http://steem.cool/@asadshah'>@asadshah</a></td><td align=right> 07/01 1:21 AM</td></tr><tr><td><a href='http://steem.cool/@herpot'>@herpot</a></td><td align=right> 07/01 1:21 AM</td></tr><tr><td><a href='http://steem.cool/@bobross'>@bobross</a></td><td align=right> 07/01 1:18 AM</td></tr><tr><td><a href='http://steem.cool/@athenajade'>@athenajade</a></td><td align=right> 07/01 1:14 AM</td></tr><tr><td><a href='http://steem.cool/@buco'>@buco</a></td><td align=right> 07/01 1:14 AM</td></tr><tr><td><a href='http://steem.cool/@xaldel'>@xaldel</a></td><td align=right> 07/01 1:13 AM</td></tr><tr><td><a href='http://steem.cool/@cheetah'>@cheetah</a></td><td align=right> 07/01 1:12 AM</td></tr><tr><td><a href='http://steem.cool/@jamtaylorÃƒÆ’Ã‚Â Ãƒâ€šÃ‚Â²ÃÆ'>@jamtaylorÃƒÆ’Ã‚Â Ãƒâ€šÃ‚Â²ÃÆ</a></td><td align=right> 07/01 1:11 AM</td></tr><tr><td><a href='http://steem.cool/@bien'>@bien</a></td><td align=right> 07/01 1:10 AM</td></tr><tr><td><a href='http://steem.cool/@oogone'>@oogone</a></td><td align=right> 07/01 1:10 AM</td></tr><tr><td><a href='http://steem.cool/@videogeek'>@videogeek</a></td><td align=right> 07/01 1:09 AM</td></tr><tr><td><a href='http://steem.cool/@songe'>@songe</a></td><td align=right> 07/01 1:09 AM</td></tr><tr><td><a href='http://steem.cool/@bangkokbrit'>@bangkokbrit</a></td><td align=right> 07/01 1:06 AM</td></tr><tr><td><a href='http://steem.cool/@n1k145'>@n1k145</a></td><td align=right> 07/01 1:05 AM</td></tr><tr><td><a href='http://steem.cool/@prenjana'>@prenjana</a></td><td align=right> 07/01 12:59 AM</td></tr><tr><td><a href='http://steem.cool/@positivesteem'>@positivesteem</a></td><td align=right> 07/01 12:59 AM</td></tr><tr><td><a href='http://steem.cool/@germanlifestyle'>@germanlifestyle</a></td><td align=right> 07/01 12:59 AM</td></tr><tr><td><a href='http://steem.cool/@paper-pecado'>@paper-pecado</a></td><td align=right> 07/01 12:59 AM</td></tr><tr><td><a href='http://steem.cool/@shine.wong'>@shine.wong</a></td><td align=right> 07/01 12:55 AM</td></tr><tr><td><a href='http://steem.cool/@lynncoyle1'>@lynncoyle1</a></td><td align=right> 07/01 12:54 AM</td></tr>                    
+                    </table>
+                    </center>
+                    
+             
+            </div>
+        </div>
+    </section>
+    
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>Copyright &copy; steem.cool 2016<br></p>
+            
+              <script language="JavaScript">var fhs = document.createElement('script');var fhs_id = "5349789";
+var ref = (''+document.referrer+'');var pn =  window.location;var w_h = window.screen.width + " x " + window.screen.height;
+fhs.src = "//s1.freehostedscripts.net/ocounter.php?site="+fhs_id+"&e1=Online User&e2=Online Users&r="+ref+"&m=0&wh="+w_h+"&a=1&pn="+pn+"";
+document.head.appendChild(fhs);document.write("<span id='o_"+fhs_id+"'></span>");
+</script>
+
+
+
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+    <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/grayscale.min.js"></script>
+    
+    <script language="javascript">
+	
+	/*
+	function log10(str) {
+		const leadingDigits = parseInt(str.substring(0, 4));
+		const log = Math.log(leadingDigits) / Math.log(10)
+		const n = str.length - 1;
+		return n + (log - parseInt(log));
+	}
+	
+	export const repLog10 = rep2 => {
+		if(rep2 == null) return rep2
+		let rep = String(rep2)
+		const neg = rep.charAt(0) === '-'
+		rep = neg ? rep.substring(1) : rep
+	
+		let out = log10(rep)
+		if(isNaN(out)) out = 0
+		out = Math.max(out - 9, 0); // @ -9, $0.50 earned is approx magnitude 1
+		out = (neg ? -1 : 1) * out
+		out = (out * 9) + 25 // 9 points per magnitude. center at 25
+		// base-line 0 to darken and < 0 to auto hide (grep rephide)
+		out = parseInt(out)
+		return out
+	}*/
+
+			
+			
+function log10(str) {
+    const leadingDigits = parseInt(str.substring(0, 4));
+    const log = Math.log(leadingDigits) / Math.log(10)
+    const n = str.length - 1;
+    return n + (log - parseInt(log));
+}
+			
+		//alert( log10("996076118924936") );	
+			
+		/*function calcReputation ($value) {
+			$reputation_level = 1;
+			$neg = false;
+			if ($value < 0)
+				$neg = true;
+			if ($value != 0) {
+				$reputation_level = log10(abs($value));
+				$reputation_level -= 9;
+				if ($reputation_level < 0) $reputation_level = 0;
+				if ($neg) $reputation_level *= -1;
+				$reputation_level = $reputation_level*9 + 25;
+			} else {
+				return 0;
+			}
+			return $reputation_level;
+		}*/
+
+</script>
+
+</body>
+
+</html>
