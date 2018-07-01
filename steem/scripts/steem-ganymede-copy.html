@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ganymede</title>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="gvRSmtU0xXv0vQlxIZEunOZDRVDEQrtnCZjplfz1UkrRqyBbYoggoDJO4z96kEvBdzjIoB1WXKzCzOqRXEmVWQ==" />
+<link rel="stylesheet" media="all" href="https://steem-ganymede.herokuapp.com/assets/application-e49024ef29fa722e5ac14878b6710716485cd65c0f2a05a55d2f4d9ee76f8d2b.css" data-turbolinks-track="reload" />
+<script>
+  /*
+   * Deals with Electron: jQuery is not defined
+   * See: http://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined
+   */
+  if ( typeof module === 'object' ) {
+    window.module = module;
+    module = undefined;
+  }
+</script>
+<script src="https://steem-ganymede.herokuapp.com/assets/application-a813b1cbbfe4644c0a09b96d4d6761a10c99f115e517484bddef09f6f9ff94d7.js" data-turbolinks-track="reload"></script>
+<script>
+  if ( window.module ) module = window.module;
+</script>
+<link rel="shortcut icon" type="image/svg" href="https://steem-ganymede.herokuapp.com/assets/ganymede-570a7df4fef2b9b410391d53748103034a566f2ec0a5fb0a1079c0f6d11a60d5.svg" />
+<link rel="apple-touch-icon" type="image/svg" href="https://steem-ganymede.herokuapp.com/assets/ganymede-570a7df4fef2b9b410391d53748103034a566f2ec0a5fb0a1079c0f6d11a60d5.svg" />
+
+</head>
+<body>
+<div class='card'>
+<div class='card-header'>
+<img width="24" height="24" src="https://steem-ganymede.herokuapp.com/assets/ganymede-570a7df4fef2b9b410391d53748103034a566f2ec0a5fb0a1079c0f6d11a60d5.svg" alt="Ganymede" />
+Ganymede by <a href="https://steemit.com/@inertia">@inertia</a>
+<div class='float-right'>
+<a class="btn btn-secondary" href="https://steem-ganymede.herokuapp.com/">Home</a>
+&nbsp;
+<a class="btn btn-secondary" href="https://steemit.com/radiator/@inertia/ganymede-a-growing-collection-of-steem-web-tools">About</a>
+&nbsp;
+<a href="http://steemit.com"><img width="24" height="24" src="https://i.imgur.com/uCaoQzf.png" alt="Ucaoqzf" /></a>
+&nbsp;&nbsp;
+</div>
+</div>
+<div class='card-block'>
+<div class='container'>
+<div class='alert-container'>
+<flash data-messages='[]' flash-message='5000'></flash>
+</div>
+</div>
+<hr>
+<ul class='nav nav-tabs'>
+<li class='nav-item'><a class="nav-link" href="https://steem-ganymede.herokuapp.com/accounts?account_names=curie&amp;voting=true">Voting</a></li>
+<li class='nav-item'><a class="nav-link active" href="https://steem-ganymede.herokuapp.com/accounts?account_names=curie&amp;upvoted=true">Upvoted</a></li>
+<li class='nav-item'><a class="nav-link" href="https://steem-ganymede.herokuapp.com/accounts?account_names=curie&amp;downvoted=true">Downvoted</a></li>
+<li class='nav-item'><a class="nav-link" href="https://steem-ganymede.herokuapp.com/accounts?account_names=curie&amp;unvoted=true">Unvoted</a></li>
+<li class='nav-item'><a class="nav-link" href="https://steem-ganymede.herokuapp.com/accounts?account_names=curie&amp;mvests=true">MVESTS</a></li>
+<li class='nav-item'><a class="nav-link" href="https://steem-ganymede.herokuapp.com/accounts?account_names=curie&amp;crosscheck=true">Crosscheck</a></li>
+</ul>
+
+<div class='card border-top-0' style='padding-top: 0'>
+<div class='card-block'>
+<div class='row'>
+<div class='col-md-12'>
+<div class='float-right'>
+<form action="/accounts" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#x2713;" />
+<input type="hidden" name="upvoted" id="upvoted" value="true" />
+Upvoters:
+<input type="text" name="account_names" id="account_names" value="curie" size="50" />
+<input type="submit" name="commit" value="Query" class="btn btn-primary" data-disable-with="Query" />
+</form>
+
+</div>
+<br>
+<br>
+<h3>
+Upvoted 16 Accounts
+</h3>
+<code>curie heartbeat1515 limmeiji950329 bitfiend ameliabartlett cn-malaysia djredimi2 josearmandor endopediatria hogarcosmico cyprianj pangoli conas teekingtv osariemen pizzapai</code>
+<br>
+<a class="btn btn-primary" href="https://steem-ganymede.herokuapp.com/accounts.text?account_names=curie&upvoted=true">Download List</a>
+</div>
+</div>
+See:
+<a href="https://steemit.com/radiator/@inertia/how-to-get-voting-lists-with-ruby">How to Get Voting Lists with Ruby</a>
+</div>
+</div>
+
+</div>
+<div class='card-footer'>
+<small class='float-right'>
+<kbd>
+<a style="color: white" href="http://creativecommons.org/publicdomain/zero/1.0/"><img src="https://i.creativecommons.org/p/zero/1.0/80x15.png" alt="80x15" />
+&nbsp;
+2018
+</a></kbd>
+</small>
+</div>
+</div>
+<p>
+<small>
+<pre class="version" style="color: #FFFFFF">Repo Revision: ?; Repo Timestamp: ?</pre>
+</small>
+</p>
+</body>
+</html>
