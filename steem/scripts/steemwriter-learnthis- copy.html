@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!-- Fallback application metadata for legacy browsers -->
+    <meta name="application-name" content="Steem Writer">
+    <link rel="icon" type="image/png" href="https://steemwriter.learnthis.ca/img/Steemwriter-logo.ico">
+
+    <meta name="description" content="Steem writer - A draft story editor and manager for easier publishing markdown content on steemit">
+    <meta name="author" content="@unipsycho">
+
+    <title>Steemwriter 1.4</title>
+
+    <!-- Bootstrap -->
+    <link href="https://steemwriter.learnthis.ca/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Angular JS -->
+    <script src="https://steemwriter.learnthis.ca/js/angular.min.js"></script>
+    <script src="https://steemwriter.learnthis.ca/js/angular-resource.js"></script>
+    <script src="https://steemwriter.learnthis.ca/js/angular-sanitize.js"></script>  
+    <script src="https://steemwriter.learnthis.ca/js/angular-animate.min.js"></script>
+
+    <!-- Showdown - Markup previewer -->
+    <script src="https://steemwriter.learnthis.ca/js/showdown.js"></script>
+    
+    <!-- IntroJS for guided tour -->
+    <link href="https://steemwriter.learnthis.ca/css/introjs.css" rel="stylesheet">
+    <script src="https://steemwriter.learnthis.ca/js/intro.js"></script>
+
+    <!-- Custom CSS and JS-->
+    <link href="https://steemwriter.learnthis.ca/css/main.css" rel="stylesheet">
+    <script src="https://steemwriter.learnthis.ca/js/main.js"></script>
+    <script src="https://steemwriter.learnthis.ca/js/download.js"></script>
+    
+    
+</head>
+
+<!-- Setup body with Angular, for live updates inline -->
+
+<body ng-app="steemwriter" ng-controller="swcontroller">
+
+
+    <!-- Modal Steemid-->
+    <div class="modal fade" id="steemOptionsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Set Steem Writer Options</h4>
+                </div>
+                <div class="modal-body">
+                    
+                    <label for="inputsteemitID">Steemit ID</label>
+                       <div>
+                        <input class="form-control" id="inputsteemitID" ng-model="steemitID" placeholder="Enter your steemit ID here" data-toggle="tooltip" title="Set your Steemit ID (without the @) to enable the profile links to link to your stats!"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" ng-click="saveOptions(steemitID)" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Navigation -->
+    <div class="nav-side-menu">
+        <div class="brand">
+            <table>
+                <tr>
+                    <td>
+                        <img class="logo" src="https://steemwriter.learnthis.ca/img/Steemwriter-logo40.png">
+                    </td>
+                    <td align="center">
+                        <h3>Steem Writer</h3>
+                        <p><h5><a href="https://steemit.com/@unipsycho">Created by @unipsycho</a></h5></p>
+                    </td>
+                </tr>
+            </table>
+            
+        </div>
+        
+        
+        <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+        <div class="menu-list">
+
+            <!-- Menu and left side navigation panel -->
+            <ul id="menu-content" class="menu-content collapse out">
+                <!-- Fixed Buttons are setup here -->
+                
+                <li data-toggle="collapse" data-target="#help" class="collapsed help" >
+                    <span class="glyphicon glyphicon-cog"></span> Help and Settings<span class="arrow"></span></a>
+                </li>
+                <ul class="sub-menu collapse" id="help">
+                    <li data-toggle="modal" data-target="#steemOptionsModal">Settings</li>
+                       <ul>Help Links
+                        <a href="#" onclick="startIntro()"><li>Using Steemwriter</li></a>
+                        <a target="_blank" href="https://steemit.com/writing/@mono/steemit-markdown-cheat-sheet-tips-to-help-you-create-beautiful-articles"><li>Markdown Help</li></a>
+                    </ul>
+                    <ul>Profile Links
+                        <a target="_blank" ng-href="https://steemit.com/@{{steemitID}}"><li>Steemit</li></a>
+                        <a target="_blank" ng-href="https://steemd.com/@{{steemitID}}"><li>Steemd</li></a>
+                        <a target="_blank" ng-href="https://steemdb.com/@{{steemitID}}"><li>Steemdb</li></a>
+                        <a target="_blank" ng-href="http://steemwhales.com/{{steemitID}}"><li>SteemWhales</li></a>
+                    </ul>
+                </ul>
+                   
+                <div id='nav_actions'>
+                    <li ng-click="newStory()" class="color-yellow"><span class="glyphicon glyphicon-envelope"></span> New Story</li>
+                    <li ng-click="duplicateStory()" class="color-yellow"><span class="glyphicon glyphicon-duplicate"></span> Duplicate Story</li>
+                    <li ng-click="newSnippet()" class="color-yellow"><span class="glyphicon glyphicon-pencil"></span> New Snippet</li>
+                </div>
+
+                
+                <div id="nav_stories">
+                    <!-- Story Drafts are setup here -->
+                    <li data-toggle="collapse" data-target="#drafts" class="collapsed">
+                        </i> Existing Drafts <span class="arrow"></span>
+                    </li>
+                    <ul class="sub-menu collapse" id="drafts">
+                        <li ng-repeat="draft in stories" data-ng-if="draft.state == 'draft'" data-toggle="tooltip" ng-click="selectStory(draft.id)" title={{draft.title}}>
+                            {{ draft.title | limitTo: 80 }}{{draft.title.length > 80 ? '...' : ''}}
+                        </li>
+                    </ul>
+
+                    <!-- Stories that are published are setup here -->
+                    <li data-toggle="collapse" data-target="#published" class="collapsed">
+                        Published <span class="arrow"></span></a>
+                    </li>
+                    <ul class="sub-menu collapse" id="published">
+                        <li ng-repeat="pub in stories" data-ng-if="pub.state == 'published'" data-toggle="tooltip" ng-click="selectStory(pub.id)" title={{pub.title}}>
+                            {{ pub.title | limitTo: 80 }}{{pub.title.length > 80 ? '...' : ''}}
+                        </li>
+                    </ul>  
+
+                    <!-- Story snippets are setup here -->
+                    <li data-toggle="collapse" data-target="#snipped" class="collapsed">
+                        Snippets <span class="arrow"></span>
+                    </li>
+                    <ul class="sub-menu collapse" id="snipped">
+                        <li ng-repeat="snip in stories" data-ng-if="snip.state == 'snippet'" data-toggle="tooltip" ng-click="selectStory(snip.id)" title={{snip.name}}>
+                            {{ snip.title | limitTo: 80 }}{{snip.name.length > 80 ? '...' : ''}}
+                            <!-- <div type="button" ng-click="copySnip(snip.id)" class="copyText btn btn-xs btn-default pull-right">Clipboard</div> -->
+                        </li>
+                    </ul>
+                    
+                    <li data-toggle="collapse" data-target="#export" class="collapsed">
+                        <span class="glyphicon glyphicon-save"></span> Export Data <span class="arrow"></span>
+                    </li>
+                    <ul class="sub-menu collapse" id="export">
+                        <button class="btn btn-primary btn-sm" ng-click="export('currentdraft')" tabindex="4">
+                             Current Draft
+                        </button>
+                        <button class="btn btn-primary btn-sm" ng-click="export('draft')" tabindex="4">
+                             All Drafts
+                        </button>
+                        <button class="btn btn-primary btn-sm" ng-click="export('published')" tabindex="4">
+                             Published
+                        </button>
+                        <button class="btn btn-primary btn-sm" ng-click="export('snippet')" tabindex="4">
+                             Snippets
+                        </button>
+                    </ul>
+                </div>  
+            </ul>
+        </div>
+        
+        <br>
+        <div class="text-center">© Copyright, all rights reserved.</div><!-- Used for Action buttons to import and export -->
+    
+    </div>
+
+    
+
+
+    <!-- Story Editor and Preview container -->
+    <div class="container" id="main">
+        <div class="row">
+            <div class="col-md-12">
+
+                <!-- Page Content -->
+                <div class="container-fluid">
+
+
+                    <!-- Left side editor -->
+                    <div class='col-md-5' id="editor">
+                        <h3>Editor:</h3> 
+
+                        <form name="editForm" novalidate>
+                            <div class="control">
+                                <input type="text" class="form-control" name="title" placeholder="Title" value="" ng-change="previewMarkdown()" ng-Model="draft.title" />
+                            </div>
+                            
+                            <div class="form-group" id='toolbar'>
+                                <button class="btn btn-sm btn-primary btn-space" ng-click="clickableImages()" tabindex="1" data-toggle="tooltip" title="Convert Images into Clickable Images">
+                                    <span class="glyphicon glyphicon-film" aria-hidden="true"></span> Make Images Clickable
+                                </button>
+                            </div>
+                            <div class="control">
+                                <textarea name="body" class="form-control" id="editText" placeholder="Markdown here..." rows="15" ng-change="previewMarkdown()" ng-Model="draft.story"></textarea>
+                            </div>
+                            <div class="control">
+                                <input type="text" class="form-control" name="tags" placeholder="Tags - 1st is category plus 4 optional" ng-change="saveDraft()" data-role="tagsinput" ng-Model="draft.tags" ng-if="draft.state!='snippet'" />
+                            </div>
+                            <div class="form-group" id='editorButtons'>
+                                <button class="btn btn-primary btn-space" ng-click="saveStory()" tabindex="4">
+                                    <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Save
+                                </button>
+                                <button class="btn btn-primary btn-space" ng-click="publishStory()" tabindex="5">
+                                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true" data-toggle="tooltip" title="Move to Published"></span> Publish
+                                </button>
+                                <button id="DeleteStorybtn" class="btn btn-primary btn-space" data-toggle="modal" data-target="#modaldelete" tabindex="6">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span> Delete
+                                </button>
+                                
+                            </div>                            
+                        </form>
+                    </div>
+
+                    <!-- Right side preview -->
+                    <div class='col-md-7 preview' id='previewarea'>
+                        <div id='title'>
+                            <h1>{{draft.title}}</h1>
+                        </div>
+                        <div id='tags'>{{tag.name}}</div>
+                        <div id='preview' ng-bind-html="preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- modal save request -->
+    <div id="modalsave" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+           <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="close(false)" data-dismiss="modal" aria-hidden="true">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="modal-title">Unsaved Changes</h3>
+                </div>
+                <div class="modal-body">
+                    You have unsaved changes in your draft, do you want to save them before proceding or just ignore them?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modalsavebtn" data-dismiss="modal" class="btn btn-primary">Save</button>
+                    <button type="button" id="modalignorebtn" data-dismiss="modal" class="btn btn-danger">Ignore Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal save request -->
+    <div id="modaldelete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+           <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="close(false)" data-dismiss="modal" aria-hidden="true">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="modal-title">Delete Story</h3>
+                </div>
+                <div class="modal-body">
+                    This will delete the story named <strong>{{draft.title}}</strong>.  Are you sure?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modalsavebtn" ng-click="deleteStory()" data-dismiss="modal" class="btn btn-primary">Delete</button>
+                    <button type="button" id="modalignorebtn" data-dismiss="modal" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <!-- jQuery -->
+    <script src="https://steemwriter.learnthis.ca/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://steemwriter.learnthis.ca/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
